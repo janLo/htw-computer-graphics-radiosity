@@ -25,12 +25,13 @@ namespace radio {
 		if(fabsf(denom) < 0.01f)
 		    throw NoIntersectException();
 
-		const float t = (normal * l.getStart() * d) / denom;
+		const float t = (normal * l.getStart() + d) / denom;
 
 		return l.getStart() + (t * l.getDir());
-	    
-
 	    }
+
+            inline const Vertex& getNormal() const { return normal; }
+            inline const D() const {return d; } 
 
 	    class NoIntersectException{};
 
