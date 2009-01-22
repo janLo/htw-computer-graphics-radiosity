@@ -1,0 +1,28 @@
+Line.o: Line.cpp \
+	Line.hpp \
+	Vertex.hpp
+Main.o: Main.cpp
+Plane.o: Plane.cpp \
+	Plane.hpp \
+	Vertex.hpp \
+	Line.hpp
+Polygon.o: Polygon.cpp \
+	Polygon.hpp \
+	Vertex.hpp \
+	Triangle.hpp
+Triangle.o: Triangle.cpp \
+	Triangle.hpp \
+	Vertex.hpp
+Vertex.o: Vertex.cpp \
+	Vertex.hpp
+Line.o: Line.hpp \
+	Vertex.hpp
+Plane.o: Plane.hpp \
+	Vertex.hpp \
+	Line.hpp
+Polygon.o: Polygon.hpp \
+	Vertex.hpp \
+	Triangle.hpp
+Triangle.o: Triangle.hpp \
+	Vertex.hpp
+Vertex.o: Vertex.hpp

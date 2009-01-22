@@ -15,30 +15,30 @@ namespace radio {
 		C_VERTEX = 2
 	    };
 
-	    Triangle(const Vertex& a, const Vertex& b, const Vertex& c)
-	        :a_(a), b_(b), c_(c)
+	    Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_)
+	        :a(a_), b(b_), c(c_)
 	    {
 	    }
 
-	    inline const Vertex& a() const { return a_; }
-	    inline const Vertex& b() const { return b_; }
-	    inline const Vertex& c() const { return c_; }
+	    inline const Vertex& A() const { return a; }
+	    inline const Vertex& B() const { return b; }
+	    inline const Vertex& C() const { return c; }
 
 	    inline const Vertex& operator[](int idx) const {
 		switch (idx) {
 		    case A_VERTEX:
-			return a_;
+			return a;
 		    case B_BERTEX:
-			return b_;
+			return b;
 		    case C_VERTEX:
-			return c_;
+			return c;
 		}
 	    }
 
 	private:
-	    Vertex a_;
-	    Vertex b_;
-	    Vertex c_;
+	    Vertex a;
+	    Vertex b;
+	    Vertex c;
     };
 }
 
