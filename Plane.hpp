@@ -16,7 +16,7 @@ namespace radio {
 
 	public:
 	    Plane(const Vertex& v1, const Vertex& v2, const Vertex& v3)
-		: normal(vertexCross(v3 - v2, v1 - v2)), d(v1 * normal)
+		: normal(vertexCross(v3 - v2, v1 - v2)), d(-1*(v1 * normal))
 	    {
                std::cout << "Plane from" << (v3 - v2).toString() << ", " << (v1 - v2).toString() << ": " << toString() << std::endl;
             }
@@ -31,7 +31,7 @@ namespace radio {
 		if(fabsf(denom) < 0.01f)
 		    throw NoIntersectException();
 
-		const float t = (normal * l.getStart() + d) / denom;
+		const float t = (normal * l.getStart() + d) / -1 *denom;
 
 		return l.getStart() + (t * l.getDir());
 	    }
@@ -118,10 +118,10 @@ namespace radio {
                 Vertex pos1(ul + (i*nX));
                 for(j = 0; j < height; j++) {
                     Vertex pos2(pos1 + (j * nY));
-                    std::cout << "p1" << pos2.toString() << std::endl;
+                    //std::cout << "p1" << pos2.toString() << std::endl;
                     points.push_back(
                             ViewPlanePoint(
-                                i, j, Line::fromPoints( pos2,prp)
+                                i, j, Line::fromPoints( prp, pos2 )
                                 )
                             );
                 }

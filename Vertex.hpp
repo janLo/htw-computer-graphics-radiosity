@@ -96,8 +96,8 @@ namespace radio {
 
     inline Vertex vertexCross(const Vertex& lhs, const Vertex& rhs) {
 	return Vertex( lhs.y * rhs.z - lhs.z * rhs.y,
-	               lhs.z * rhs.x - lhs.x - rhs.z,
-	               lhs.x * rhs.y - lhs.y - rhs.x);
+	               lhs.z * rhs.x - lhs.x * rhs.z,
+	               lhs.x * rhs.y - lhs.y * rhs.x);
     }
 
     inline float abs(const Vertex& v){

@@ -19,7 +19,7 @@ namespace radio {
             };
 
             Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_)
-                :a(a_), b(b_), c(c_), p(a,b,c)
+                :a(a_), b(b_), c(c_), p(b,a,c)
             {
                 std::cout << p.toString() << std::endl;
             }
@@ -43,21 +43,27 @@ namespace radio {
 
             inline bool pointInTriangle(const Vertex& v) {
                 const Vertex& normal = p.getNormal();
-                Vertex  temp(vertexCross(a - b, normal));
 
+                //Vertex  temp(vertexCross(a - b, normal));
+                Vertex  temp(vertexCross(b - a, normal));
                 Plane pl1(temp, a);
+//		std::cout << "Check:" << pl1.toString() << " .. " << v.toString() << std::endl;
                 if( ( (pl1.getNormal() * v) + pl1.D() ) < 0.0f) 
                     return false;
 
                 // Test mit der zweiten Ebene entlang den Punkten B und C
+                //temp = vertexCross(b - c, normal);
                 temp = vertexCross(b - c, normal);
                 Plane pl2(temp, b);
+//		std::cout << "Check:" << pl2.toString() << " .. " << v.toString() << std::endl;
                 if( ( (pl2.getNormal() * v) + pl2.D() ) < 0.0f)
                     return false; 
 
                 // Test mit der dritten Ebene entlang den Punkten C und A
+                //temp = vertexCross(c - a, normal);
                 temp = vertexCross(c - a, normal);
                 Plane pl3(temp, c);
+//		std::cout << "Check:" << pl3.toString() << " .. " << v.toString() << std::endl;
                 if( ( (pl3.getNormal() * v) + pl3.D() )  < 0.0f)
                     return false;
 

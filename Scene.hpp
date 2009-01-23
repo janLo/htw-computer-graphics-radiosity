@@ -47,9 +47,9 @@ namespace radio {
         protected:
             virtual void defScene() {
                 Polygon p1;
-                p1.addVertex(Vertex(1,1,1));
-                p1.addVertex(Vertex(50,50,1));
-                p1.addVertex(Vertex(50,1,1));
+                p1.addVertex(Vertex(0,0,1));
+                p1.addVertex(Vertex(100,0,1));
+                p1.addVertex(Vertex(0,100,1));
                 polygons.push_back(p1);
 
             }
