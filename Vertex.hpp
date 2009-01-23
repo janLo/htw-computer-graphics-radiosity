@@ -1,6 +1,8 @@
 #ifndef VERTEX_HPP
 #define VERTEX_HPP
 
+#include "math.h"
+
 namespace radio {
 
     class Vertex {
@@ -89,6 +91,9 @@ namespace radio {
 	               lhs.x * rhs.y - lhs.y - rhs.x);
     }
 
+    inline float abs(const Vertex& v){
+	return sqrt(v*v);
+    }
 
 }
 

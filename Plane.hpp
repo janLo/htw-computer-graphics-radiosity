@@ -35,10 +35,31 @@ namespace radio {
 
 	    class NoIntersectException{};
 
-	private:
+	protected:
 	    Vertex normal;
 	    float d;
 
+    };
+
+    class ViewPlane : public Plane {
+	public:
+	ViewPlane(const Vertex& ul_, const Vertex ur_, const Vertex ol_, float distance_)
+	    : Plane(ul,ur,ol), ul(ul_), ur(ur_), ol(ol_), distance(distance_), prp(0,0,0)
+	{
+	    Vertex normInv(normal * -1);
+	    Vertex normDir(normInv / abs(normInv));
+	    Vertex start(ul + ((ur - ul) / 2) + ((ol - ur) / 2));
+
+	    prp = start + (distance * normDir);
+	}
+
+	private:
+	Vertex ul;
+	Vertex ur;
+	Vertex ol;
+	float distance;
+
+	Vertex prp;
     };
 
     
