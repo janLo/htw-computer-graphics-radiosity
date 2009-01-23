@@ -1,7 +1,13 @@
 Line.o: Line.cpp \
 	Line.hpp \
 	Vertex.hpp
-Main.o: Main.cpp
+Main.o: Main.cpp \
+	Vertex.hpp \
+	Scene.hpp \
+	Plane.hpp \
+	Line.hpp \
+	Polygon.hpp \
+	Triangle.hpp
 Plane.o: Plane.cpp \
 	Plane.hpp \
 	Vertex.hpp \
@@ -9,10 +15,21 @@ Plane.o: Plane.cpp \
 Polygon.o: Polygon.cpp \
 	Polygon.hpp \
 	Vertex.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Line.hpp
+Scene.o: Scene.cpp \
+	Scene.hpp \
+	Vertex.hpp \
+	Plane.hpp \
+	Line.hpp \
+	Polygon.hpp \
 	Triangle.hpp
 Triangle.o: Triangle.cpp \
 	Triangle.hpp \
-	Vertex.hpp
+	Vertex.hpp \
+	Plane.hpp \
+	Line.hpp
 Vertex.o: Vertex.cpp \
 	Vertex.hpp
 Line.o: Line.hpp \
@@ -22,7 +39,17 @@ Plane.o: Plane.hpp \
 	Line.hpp
 Polygon.o: Polygon.hpp \
 	Vertex.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Line.hpp
+Scene.o: Scene.hpp \
+	Vertex.hpp \
+	Plane.hpp \
+	Line.hpp \
+	Polygon.hpp \
 	Triangle.hpp
 Triangle.o: Triangle.hpp \
-	Vertex.hpp
+	Vertex.hpp \
+	Plane.hpp \
+	Line.hpp
 Vertex.o: Vertex.hpp

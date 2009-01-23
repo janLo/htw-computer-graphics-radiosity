@@ -10,7 +10,7 @@ namespace radio {
     class Polygon {
 	
 	inline void makeTriangle(){
-	    if(3 > vertices.size()){
+	    if(3 <= vertices.size()){
 		std::vector<Vertex>::reverse_iterator it = vertices.rbegin();
                 
 		Vertex& c = *it;
@@ -35,6 +35,11 @@ namespace radio {
 	inline bool isDrawable() const {
 	    return 3 > vertices.size();
 	}
+
+        typedef std::vector<Triangle>::iterator TriangleIterator;
+        
+        TriangleIterator getTriangleBegin() { return triangles.begin(); }
+        TriangleIterator getTriangleEnd() { return triangles.end(); }
 
 	private:
 	std::vector<Vertex> vertices;

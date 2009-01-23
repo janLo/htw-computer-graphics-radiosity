@@ -1,6 +1,9 @@
 #ifndef VERTEX_HPP
 #define VERTEX_HPP
 
+#include <string>
+#include <boost/lexical_cast.hpp>
+
 #include "math.h"
 
 namespace radio {
@@ -42,6 +45,12 @@ namespace radio {
 		const Vertex& lhs = *this;
 		return rhs.x * lhs.x + rhs.y * lhs.y + rhs.z * lhs.z;
 	    }
+
+            inline std::string toString() const { 
+                std::string x_ = boost::lexical_cast<std::string, float>(x);
+                std::string y_ = boost::lexical_cast<std::string, float>(y);
+                std::string z_ = boost::lexical_cast<std::string, float>(z);
+                return std::string("("+x_+","+y_+","+z_+")"); }
 
 	private:
 	    float x;

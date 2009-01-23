@@ -13,7 +13,7 @@ namespace radio {
 	    {}
 
 	    static inline Line fromPoints(const Vertex& a, const Vertex& b) {
-		return Line(a, b - a);
+		return Line(b, b - a);
 	    }
 
 	    inline float startX() const { return start.X(); }
