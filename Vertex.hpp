@@ -105,6 +105,9 @@ namespace radio {
 	return sqrt(v*v);
     }
 
+    inline float sqrAbs(const Vertex& v){
+	return v * v;
+    }
 }
 
 #endif

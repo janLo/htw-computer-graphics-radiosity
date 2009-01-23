@@ -12,7 +12,8 @@ Main.o: Main.cpp \
 	Line.hpp \
 	Polygon.hpp \
 	Triangle.hpp \
-	BSphere.hpp
+	BSphere.hpp \
+	View.hpp
 Plane.o: Plane.cpp \
 	Plane.hpp \
 	Vertex.hpp \
@@ -31,7 +32,8 @@ Scene.o: Scene.cpp \
 	Line.hpp \
 	Polygon.hpp \
 	Triangle.hpp \
-	BSphere.hpp
+	BSphere.hpp \
+	View.hpp
 Triangle.o: Triangle.cpp \
 	Triangle.hpp \
 	Vertex.hpp \
@@ -39,6 +41,8 @@ Triangle.o: Triangle.cpp \
 	Line.hpp
 Vertex.o: Vertex.cpp \
 	Vertex.hpp
+View.o: View.cpp \
+	View.hpp
 BSphere.o: BSphere.hpp \
 	Vertex.hpp \
 	Line.hpp
@@ -59,9 +63,11 @@ Scene.o: Scene.hpp \
 	Line.hpp \
 	Polygon.hpp \
 	Triangle.hpp \
-	BSphere.hpp
+	BSphere.hpp \
+	View.hpp
 Triangle.o: Triangle.hpp \
 	Vertex.hpp \
 	Plane.hpp \
 	Line.hpp
 Vertex.o: Vertex.hpp
+View.o: View.hpp

@@ -25,7 +25,20 @@ namespace radio {
 		:normal(normal_), d(point * normal)
             {}
 
-	    Vertex calcIntersect(const Line& l) const {
+	    class Intersect {
+		public: 
+		    Intersect(const Vertex& p_, float d_)
+			:p(p_), d(d_)
+		    {}
+		    inline float getDistance() const {return d;}
+		    inline const Vertex& getPoint() const {return p;}
+
+		private:
+		    Vertex p;
+		    float d;
+	    };
+
+	    Intersect calcIntersect(const Line& l) const {
 		const float denom = normal * l.getDir();
 
 		if(fabsf(denom) < 0.01f)
@@ -33,7 +46,7 @@ namespace radio {
 
 		const float t = (normal * l.getStart() + d) / -1 *denom;
 
-		return l.getStart() + (t * l.getDir());
+		return Intersect(l.getStart() + (t * l.getDir()), t);
 	    }
 
             inline const Vertex& getNormal() const { return normal; }
@@ -90,7 +103,10 @@ namespace radio {
                     return std::string("("+x_+","+y_+") .. Line: " + line.getStart().toString() + "+t*" + line.getDir().toString()  + "");
                 }
 
-                const Line& getLine() const { return line; }
+                inline const Line& getLine() const { return line; }
+		inline int getX() {return x;}
+		inline int getY() {return y;}
+
             private:
                 int x;
                 int y;
