@@ -26,10 +26,12 @@ namespace radio {
                     for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
                         Polygon& p = *polIt;
 
+			std::cout << "on " << pt.toString();
 			if (!p.checkSphere(pt.getLine())){
-			    std::cout << "on " << pt.toString() << " No hit on spere" << std::endl;
+			    std::cout  << " No hit on spere" << std::endl;
 			    continue;
 			}
+			std::cout  << std::endl;
 
                         for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
                             Triangle& t = *tit;
@@ -53,12 +55,18 @@ namespace radio {
         protected:
             virtual void defScene() {
                 Polygon p1;
-                p1.addVertex(Vertex(  0,  0,  1));
-                p1.addVertex(Vertex(100,  0,  1));
-                p1.addVertex(Vertex(  0,100,  1));
-                p1.addVertex(Vertex( 60, 60,  1));
-                polygons.push_back(p1);
+  //              p1.addVertex(Vertex(  0,  0,  1));
+  //              p1.addVertex(Vertex(100,  0,  1));
+  //              p1.addVertex(Vertex(  0,100,  1));
+  //              p1.addVertex(Vertex( 60, 60,  1));
+  //              polygons.push_back(p1);
 
+		Polygon p2;
+		p2.addVertex(Vertex( 20, 10, 2));
+		p2.addVertex(Vertex( 10, 10, 2));
+		p2.addVertex(Vertex( 10, 20, 2));
+//		p2.addVertex(Vertex( 20, 20, 2));
+		polygons.push_back(p2);
             }
         private:
 

@@ -19,14 +19,16 @@ namespace radio {
 		Z_VAL
 	    };
 
-	    Vertex(float x_, float y_, float z_) 
-	    {
-		x = x_; 
-		y = y_; 
-		z = z_;
-	    }
+	    Vertex(float x_, float y_, float z_);
 
-	    float operator[](int idx) const {
+	    Vertex& norm();
+	    Vertex getNormed() const;
+
+	    float X() const { return x; }
+	    float Y() const { return y; }
+	    float Z() const { return z; }
+
+	    inline float operator[](int idx) const {
 		switch (idx){
 		    case X_VAL: 
 			return x;
@@ -35,27 +37,26 @@ namespace radio {
 		    case Z_VAL:
 			return z;
 		}
+		return x;
 	    }
-
-	    inline float X() const { return x; }
-	    inline float Y() const { return y; }
-	    inline float Z() const { return z; }
 
 	    inline float operator*(const Vertex& rhs) const {
 		const Vertex& lhs = *this;
 		return rhs.x * lhs.x + rhs.y * lhs.y + rhs.z * lhs.z;
 	    }
 
-            inline std::string toString() const { 
-                std::string x_ = boost::lexical_cast<std::string, float>(x);
-                std::string y_ = boost::lexical_cast<std::string, float>(y);
-                std::string z_ = boost::lexical_cast<std::string, float>(z);
-                return std::string("("+x_+","+y_+","+z_+")"); }
+	    inline std::string toString() const { 
+		std::string x_ = boost::lexical_cast<std::string, float>(x);
+		std::string y_ = boost::lexical_cast<std::string, float>(y);
+		std::string z_ = boost::lexical_cast<std::string, float>(z);
+		return std::string("("+x_+","+y_+","+z_+")"); 
+	    }
 
 	private:
 	    float x;
 	    float y;
 	    float z;
+	    bool normed;
 
 	    friend Vertex operator + (const Vertex& v, const Vertex& w);
 	    friend Vertex operator - (const Vertex& v, const Vertex& w);

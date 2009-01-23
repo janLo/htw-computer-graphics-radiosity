@@ -1,4 +1,7 @@
-BSphere.o: BSphere.cpp
+BSphere.o: BSphere.cpp \
+	BSphere.hpp \
+	Vertex.hpp \
+	Line.hpp
 Line.o: Line.cpp \
 	Line.hpp \
 	Vertex.hpp
@@ -36,7 +39,9 @@ Triangle.o: Triangle.cpp \
 	Line.hpp
 Vertex.o: Vertex.cpp \
 	Vertex.hpp
-BSphere.o: BSphere.hpp
+BSphere.o: BSphere.hpp \
+	Vertex.hpp \
+	Line.hpp
 Line.o: Line.hpp \
 	Vertex.hpp
 Plane.o: Plane.hpp \

@@ -16,6 +16,16 @@ namespace radio {
 		return Line(b, b - a);
 	    }
 
+	    static inline Line fromPointsNormed(const Vertex& a, const Vertex& b) {
+	        Line l(b, b - a);
+		l.normDir();
+		return l;
+	    }
+
+	    inline void normDir(){
+	        dir.norm();
+	    }
+
 	    inline float startX() const { return start.X(); }
 	    inline float startY() const { return start.Y(); }
 	    inline float startZ() const { return start.Z(); }

@@ -62,7 +62,7 @@ namespace radio {
 	    : Plane(ol_,ul_,ur_), ul(ul_), ur(ur_), ol(ol_), distance(distance_), prp(0,0,0), width(w), height(h)
 	{
 	    Vertex normInv(normal * -1);
-	    Vertex normDir(normInv / abs(normInv));
+	    Vertex normDir(normInv.norm());
 	    Vertex start(ul + ((ur - ul) / 2) + ((ol - ul) / 2));
 
 	    prp = start + (distance * normDir);
@@ -121,7 +121,7 @@ namespace radio {
                     //std::cout << "p1" << pos2.toString() << std::endl;
                     points.push_back(
                             ViewPlanePoint(
-                                i, j, Line::fromPoints( prp, pos2 )
+                                i, j, Line::fromPointsNormed( prp, pos2 )
                                 )
                             );
                 }
