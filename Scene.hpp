@@ -25,15 +25,21 @@ namespace radio {
                     ViewPlane::ViewPlanePoint& pt = *pit;
                     for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
                         Polygon& p = *polIt;
+
+			if (!p.checkSphere(pt.getLine())){
+			    std::cout << "on " << pt.toString() << " No hit on spere" << std::endl;
+			    continue;
+			}
+
                         for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
                             Triangle& t = *tit;
                             const Plane& p = t.getTrianglePlane();
 
                             try {
                                 Vertex intersect(p.calcIntersect(pt.getLine()));
-                                std::cout << "intersect on " << pt.toString() << ": (" << intersect.X() << "," << intersect.Y() << "," << intersect.Z() << ")" << std::endl;
+                                //std::cout << "intersect on " << pt.toString() << ": (" << intersect.X() << "," << intersect.Y() << "," << intersect.Z() << ")" << std::endl;
                                 if (t.pointInTriangle(intersect)) {
-                                    std::cout << "In Triangle" << std::endl;
+                                    //std::cout << "In Triangle" << std::endl;
                                 }
                             } catch (Plane::NoIntersectException e) {
                                 std::cout << "No Intersect" << std::endl;
@@ -47,13 +53,17 @@ namespace radio {
         protected:
             virtual void defScene() {
                 Polygon p1;
-                p1.addVertex(Vertex(0,0,1));
-                p1.addVertex(Vertex(100,0,1));
-                p1.addVertex(Vertex(0,100,1));
+                p1.addVertex(Vertex(  0,  0,  1));
+                p1.addVertex(Vertex(100,  0,  1));
+                p1.addVertex(Vertex(  0,100,  1));
+                p1.addVertex(Vertex( 60, 60,  1));
                 polygons.push_back(p1);
 
             }
         private:
+
+            
+
             int width;
             int height;
             float ptr_dist;

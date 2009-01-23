@@ -4,6 +4,7 @@
 #include <vector>
 #include "Vertex.hpp"
 #include "Triangle.hpp"
+#include "BSphere.hpp"
 
 namespace radio {
 
@@ -30,10 +31,15 @@ namespace radio {
 	inline void addVertex(const Vertex& v) {
 	    vertices.push_back(v);
 	    makeTriangle();
+	    bSphere.recalc(v);
 	}
 
 	inline bool isDrawable() const {
 	    return 3 > vertices.size();
+	}
+
+	inline bool checkSphere(const Line& l) const {
+	    return bSphere.hitSphere(l);
 	}
 
         typedef std::vector<Triangle>::iterator TriangleIterator;
@@ -44,6 +50,7 @@ namespace radio {
 	private:
 	std::vector<Vertex> vertices;
 	std::vector<Triangle> triangles;
+	BSphere bSphere;
 
     };
 }
