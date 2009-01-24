@@ -1,3 +1,6 @@
+#ifndef BSPHERE_HPP
+#define BSPHERE_HPP
+
 #include <iostream>
 
 #include "Vertex.hpp"
@@ -89,10 +92,10 @@ namespace radio {
 
 		rad = abs((maxV - minV) / 2.0f);
 
-		std::cout << "x: " << xMin << "-" << xMax;
+		/*std::cout << "x: " << xMin << "-" << xMax;
 		std::cout << " y: " << yMin << "-" << yMax;
-		std::cout << " z: " << zMin << "-" << zMax;
-		std::cout << "Sphere at " << center.toString() << "with rad: "<< rad << std::endl;
+		std::cout << " z: " << zMin << "-" << zMax << std::endl;*/
+		//std::cout << "Sphere at " << center.toString() << "with rad: "<< rad << std::endl;
 	    }
 
 	    float xMin;
@@ -107,3 +110,4 @@ namespace radio {
             bool initialized;
     };
 }
+#endif

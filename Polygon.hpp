@@ -15,11 +15,17 @@ namespace radio {
 	    if(3 <= vertices.size()){
 		std::vector<Vertex>::reverse_iterator it = vertices.rbegin();
                 
-		Vertex& c = *it;
-		Vertex& b = *(++it);
-		Vertex& a = *(++it);
-
-		triangles.push_back(Triangle(a,b,c, colour));
+		if (0 == (vertices.size() % 2)){
+		    Vertex& a = *it;
+		    Vertex& b = *(++it);
+		    Vertex& c = *(++it);
+		    triangles.push_back(PolygonTriangle(a,b,c, colour));
+		} else {
+		    Vertex& c = *it;
+		    Vertex& b = *(++it);
+		    Vertex& a = *(++it);
+		    triangles.push_back(PolygonTriangle(a,b,c, colour));
+		}
 	    }
 	}
 
@@ -43,14 +49,14 @@ namespace radio {
 	    return bSphere.hitSphere(l);
 	}
 
-        typedef std::vector<Triangle>::iterator TriangleIterator;
+        typedef std::vector<PolygonTriangle>::iterator TriangleIterator;
         
         TriangleIterator getTriangleBegin() { return triangles.begin(); }
         TriangleIterator getTriangleEnd() { return triangles.end(); }
 
 	private:
 	std::vector<Vertex> vertices;
-	std::vector<Triangle> triangles;
+	std::vector<PolygonTriangle> triangles;
 	BSphere bSphere;
 	Colour colour;
 

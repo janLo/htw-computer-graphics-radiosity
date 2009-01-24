@@ -14,9 +14,9 @@ Main.o: Main.cpp \
 	Line.hpp \
 	Polygon.hpp \
 	Triangle.hpp \
+	Colour.hpp \
 	BSphere.hpp \
-	View.hpp \
-	Colour.hpp
+	View.hpp
 Plane.o: Plane.cpp \
 	Plane.hpp \
 	Vertex.hpp \
@@ -27,6 +27,7 @@ Polygon.o: Polygon.cpp \
 	Triangle.hpp \
 	Plane.hpp \
 	Line.hpp \
+	Colour.hpp \
 	BSphere.hpp
 Scene.o: Scene.cpp \
 	Scene.hpp \
@@ -35,14 +36,16 @@ Scene.o: Scene.cpp \
 	Line.hpp \
 	Polygon.hpp \
 	Triangle.hpp \
+	Colour.hpp \
 	BSphere.hpp \
-	View.hpp \
-	Colour.hpp
+	View.hpp
 Triangle.o: Triangle.cpp \
 	Triangle.hpp \
 	Vertex.hpp \
 	Plane.hpp \
-	Line.hpp
+	Line.hpp \
+	Colour.hpp \
+	BSphere.hpp
 Vertex.o: Vertex.cpp \
 	Vertex.hpp
 View.o: View.cpp \
@@ -62,6 +65,7 @@ Polygon.o: Polygon.hpp \
 	Triangle.hpp \
 	Plane.hpp \
 	Line.hpp \
+	Colour.hpp \
 	BSphere.hpp
 Scene.o: Scene.hpp \
 	Vertex.hpp \
@@ -69,13 +73,15 @@ Scene.o: Scene.hpp \
 	Line.hpp \
 	Polygon.hpp \
 	Triangle.hpp \
+	Colour.hpp \
 	BSphere.hpp \
-	View.hpp \
-	Colour.hpp
+	View.hpp
 Triangle.o: Triangle.hpp \
 	Vertex.hpp \
 	Plane.hpp \
-	Line.hpp
+	Line.hpp \
+	Colour.hpp \
+	BSphere.hpp
 Vertex.o: Vertex.hpp
 View.o: View.hpp \
 	Colour.hpp

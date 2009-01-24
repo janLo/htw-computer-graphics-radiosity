@@ -18,7 +18,7 @@ namespace radio {
 	    Plane(const Vertex& v1, const Vertex& v2, const Vertex& v3)
 		: normal(vertexCross(v3 - v2, v1 - v2)), d(-(v1 * normal))
 	    {
-               std::cout << "Plane from" << (v3 - v2).toString() << ", " << (v1 - v2).toString() << ": " << toString() << std::endl;
+               //std::cout << "Plane from" << (v3 - v2).toString() << ", " << (v1 - v2).toString() << ": " << toString() << std::endl;
             }
 
 	    Plane(const Vertex& normal_, const Vertex point) 

@@ -1,14 +1,19 @@
+#ifndef SCENE_HPP
+#define SCENE_HPP
+
+#include <GL/glut.h>
+#include <vector>
+#include <algorithm>
+#include <iostream>
+#include <utility>
+
 #include "Vertex.hpp"
 #include "Plane.hpp"
 #include "Polygon.hpp"
 #include "Triangle.hpp"
 #include "View.hpp"
 #include "Colour.hpp"
-#include <GL/glut.h>
-#include <vector>
-#include <algorithm>
-#include <iostream>
-#include <utility>
+
 
 namespace radio {
 
@@ -47,13 +52,10 @@ namespace radio {
                 for (pit = viewPlane.getPointBegin(); pit != viewPlane.getPointEnd(); pit++){
                     ViewPlane::ViewPlanePoint& pt = *pit;
 
-		    //std::cout << pt.toString() << std::endl;
-
                     for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
                         Polygon& p = *polIt;
 
 			if (!p.checkSphere(pt.getLine())){
-			    //std::cout << "No Hit" << std::endl;
 			    continue;
 			}
 
@@ -62,16 +64,13 @@ namespace radio {
                             const Plane& p = t.getTrianglePlane();
 
                             try {
+
 				Plane::Intersect inter(p.calcIntersect(pt.getLine()));
-				if (ptr_dist < inter.getDistance())
-				    continue;
                                 intersects.push_back( 
-					std::pair<Triangle,Plane::Intersect>(
-					    t, inter
-					    ) 
+					std::pair<Triangle,Plane::Intersect>(t, inter) 
 					);
+
                             } catch (Plane::NoIntersectException e) {
-                                //std::cout << "No Intersect" << std::endl;
                             }
                         }
 		    }
@@ -84,11 +83,8 @@ namespace radio {
 			Triangle&                              tri   = (*iit).first;
 			Plane::Intersect&                      inter = (*iit).second;
 
-//			std::cout << "Intersect: " << inter.getPoint().toString() << std::endl;
-
 			if (tri.pointInTriangle(inter.getPoint())) {
 			    view.setPixel(pt.getX(), pt.getY(), tri.getColour());
-			    //std::cout << "In Triangle" << std::endl;
 			    break;
 			}
 		    }
@@ -98,27 +94,27 @@ namespace radio {
 
         protected:
             virtual void defScene() {
-                Polygon p1(Colour(1,0,0));
+/*                Polygon p1(Colour(1,0,0));
                 p1.addVertex(Vertex(  0,  0,  8));
                 p1.addVertex(Vertex(100,  0,  8));
                 p1.addVertex(Vertex(  0,100,  8));
                 p1.addVertex(Vertex( 60, 60,  8));
                 polygons.push_back(p1);
-
+*/
 		Polygon p2(Colour(0,1,0));
 		p2.addVertex(Vertex( 10, 10, 4));
-		p2.addVertex(Vertex( 20, 10, 4));
 		p2.addVertex(Vertex( 10, 20, 4));
+		p2.addVertex(Vertex( 20, 10, 4));
 		p2.addVertex(Vertex( 20, 20, 4));
 		polygons.push_back(p2);
-
+/*
 		Polygon p3(Colour(0,0,1));
 		p3.addVertex(Vertex( 20, 20, 20));
 		p3.addVertex(Vertex( 20, 30, 2));
 		p3.addVertex(Vertex( 30, 20, 2));
 		p3.addVertex(Vertex( 30, 30, 20));
 		polygons.push_back(p3);
-            }
+*/            }
             std::vector<Polygon> polygons;
         private:
 
@@ -213,3 +209,5 @@ namespace radio {
     };
 
 }
+
+#endif

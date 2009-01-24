@@ -2,13 +2,16 @@
 #define TRIANGLE_HPP
 
 #include <iostream>
+#include <vector>
 
 #include "Vertex.hpp"
 #include "Plane.hpp"
 #include "Colour.hpp"
+#include "BSphere.hpp"
 
 namespace radio {
 
+    class Patch;
 
     class Triangle {
         public:
@@ -19,17 +22,9 @@ namespace radio {
                 C_VERTEX = 2
             };
 
-            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_)
-                :a(a_), b(b_), c(c_), p(b,a,c)
-            {
-                std::cout << p.toString() << std::endl;
-            }
-
-            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col)
-                :a(a_), b(b_), c(c_), p(b,a,c), colour(col)
-            {
-                std::cout << p.toString() << std::endl;
-            }
+            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_);
+            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col);
+            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_);
 
 	    inline const Colour& getColour() const { return colour; }
 
@@ -53,40 +48,74 @@ namespace radio {
             inline bool pointInTriangle(const Vertex& v) {
                 const Vertex& normal = p.getNormal();
 
-//		std::cout << "Normal:" << normal.toString() << std::endl;
-                //Vertex  temp(vertexCross(a - b, normal));
                 Vertex  temp(vertexCross(b - a, normal));
                 Plane pl1(temp, a);
-//		std::cout << "Check:" << pl1.toString() << " .. " << v.toString() << std::endl;
                 if( ( (pl1.getNormal() * v) + pl1.D() ) < 0.0f) 
                     return false;
 
-                // Test mit der zweiten Ebene entlang den Punkten B und C
-                //temp = vertexCross(b - c, normal);
                 temp = vertexCross(c - b, normal);
                 Plane pl2(temp, b);
-//		std::cout << "Check:" << pl2.toString() << " .. " << v.toString() << std::endl;
                 if( ( (pl2.getNormal() * v) + pl2.D() ) < 0.0f)
                     return false; 
 
-                // Test mit der dritten Ebene entlang den Punkten C und A
-                //temp = vertexCross(c - a, normal);
                 temp = vertexCross(a - c, normal);
                 Plane pl3(temp, c);
-//		std::cout << "Check:" << pl3.toString() << " .. " << v.toString() << std::endl;
                 if( ( (pl3.getNormal() * v) + pl3.D() )  < 0.0f)
                     return false;
 
                 return true;
             }
 
+	    virtual ~Triangle(){}
+	    static void split(std::vector<Patch>& store, const Triangle& t);
+
         private:
+
+	    static inline Vertex splitEdge(const Vertex& a, const Vertex& b){
+		return a + ((b-a) / 2.0f);
+	    }
+
             Vertex a;
             Vertex b;
             Vertex c;
             Plane p;
 	    Colour colour;
     };
+
+    class Patch : public Triangle {
+
+	public:
+	    Patch(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_)
+		:Triangle(a_, b_, c_, col, p_), mid(0,0,0), sphere(a_,b_,c_)
+		{
+		/* TODO Fläche und Mittelpunkt */
+		}
+
+	private:
+	    Vertex mid;
+	    float area;
+	    BSphere sphere;
+
+    };
+
+    class PolygonTriangle : public Triangle {
+        public:
+	    PolygonTriangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col)
+		:Triangle(a_, b_,  c_, col)
+	    {
+	        Triangle::split(patches, *this);
+	    }
+
+	    typedef std::vector<Patch>::iterator PatchIterator;
+
+	    inline PatchIterator getPatchBegin() { return patches.begin(); }
+	    inline PatchIterator getPatchEnd()   { return patches.end();   }
+
+	private:
+	    std::vector<Patch> patches;
+    };
+
+
 }
 
 #endif
