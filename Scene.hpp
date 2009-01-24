@@ -49,10 +49,6 @@ namespace radio {
                 ViewPlane::PointIterator pit = viewPlane.getPointBegin();
 
 		// Points
-		/*int i;
-                #pragma omp parallel for schedule(dynamic,2) private(i)
-                for (int i = 0; i < viewPlane.numPoints(); i++){
-                    ViewPlane::ViewPlanePoint& pt = pit[i];*/
                 for (pit = viewPlane.getPointBegin(); pit != viewPlane.getPointEnd(); pit++){
                     ViewPlane::ViewPlanePoint& pt = *pit;
 	            std::vector<std::pair<Triangle, Plane::Intersect> > intersects;
@@ -161,35 +157,35 @@ namespace radio {
 
 		// Room
 		{
-		    Polygon top(Colour(1,0,0));
+		    Polygon top(Colour(0.6,0,0));
 		    top.addVertex(Vertex(0,100,0));
 		    top.addVertex(Vertex(100,100,0));
 		    top.addVertex(Vertex(0,100,200));
 		    top.addVertex(Vertex(100,100,200));
 		    polygons.push_back(top);
 
-		    Polygon right(Colour(0,1,0));
+		    Polygon right(Colour(0,0.6,0));
 		    right.addVertex(Vertex(100,100,0));
 		    right.addVertex(Vertex(100,100,200));
 		    right.addVertex(Vertex(100,0,0));
 		    right.addVertex(Vertex(100,0,200));
 		    polygons.push_back(right);
 
-		    Polygon bottom(Colour(0.5,0.5,0.5));
+		    Polygon bottom(Colour(0.3,0.3,0.3));
 		    bottom.addVertex(Vertex(0,0,0));
 		    bottom.addVertex(Vertex(100,0,0));
 		    bottom.addVertex(Vertex(0,0,200));
 		    bottom.addVertex(Vertex(100,0,200));
 		    polygons.push_back(bottom);
 
-		    Polygon left(Colour(0,0,1));
+		    Polygon left(Colour(0,0,6));
 		    left.addVertex(Vertex(0,100,0));
 		    left.addVertex(Vertex(0,100,200));
 		    left.addVertex(Vertex(0,0,0));
 		    left.addVertex(Vertex(0,0,200));
 		    polygons.push_back(left);
 
-		    Polygon back(Colour(0.7,0.7,0.3));
+		    Polygon back(Colour(0.5,0.5,0.1));
 		    back.addVertex(Vertex(0,100,200));
 		    back.addVertex(Vertex(100,100,200));
 		    back.addVertex(Vertex(0,0,200));
