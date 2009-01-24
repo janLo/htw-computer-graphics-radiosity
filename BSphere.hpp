@@ -29,19 +29,22 @@ namespace radio {
 	    }
 	    
 	    inline bool hitSphere(const Line& l) const {
-		const Vertex  d = l.getDir().getNormed();
+		      Vertex  d = l.getDir();
 		const Vertex& o = l.getStart();
 		const Vertex& c = center;
 		const Vertex diff = o - c;
 
+               d.norm();
+
+//		std::cout << abs(d)  << " " << d.toString()<< std::endl;
 
 		float a = 2.0f * (d.X() * diff.X() + 
 			          d.Y() * diff.Y() + 
 			          d.Z() * diff.Z());
 		float b = diff * diff - rad * rad;
 
-		float tmp = (pow(a, 2.0f) *0.25f) - b ;
-//		std::cout << "tmp:"<<tmp<<std::endl;
+		float tmp = ((a * a) *0.25f) - b ;
+	//	std::cout << "tmp:"<<tmp<<std::endl;
 
 		if (tmp < 0.0f)
 		    return false;
@@ -78,19 +81,13 @@ namespace radio {
 	    }
 
 	    inline void calc(){
-		float radX = ((xMax - xMin) / 2);
-                float centerX = xMin + radX;
+		Vertex maxV(xMax,yMax,zMax);
+		Vertex minV(xMin,yMin,zMin);
+                Vertex dist((maxV - minV) / 2.0f);
 
-		float radY = ((yMax - yMin) / 2);
-		float centerY = yMin + radY;
+		center = minV + dist;
 
-		float radZ = ((zMax - zMin) / 2);
-		float centerZ = zMin + radZ;
-
-		center = Vertex(centerX, centerY, centerZ);
-
-		rad = ((radX < radY) ? radY : radX );
-		rad = ((rad  < radZ) ? radZ : rad  );
+		rad = abs((maxV - minV) / 2.0f);
 
 		std::cout << "x: " << xMin << "-" << xMax;
 		std::cout << " y: " << yMin << "-" << yMax;

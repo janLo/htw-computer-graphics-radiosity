@@ -21,7 +21,7 @@ namespace radio {
 
 	    Vertex(float x_, float y_, float z_);
 
-	    Vertex& norm();
+	    void norm();
 	    Vertex getNormed() const;
 
 	    float X() const { return x; }
@@ -50,6 +50,14 @@ namespace radio {
 		std::string y_ = boost::lexical_cast<std::string, float>(y);
 		std::string z_ = boost::lexical_cast<std::string, float>(z);
 		return std::string("("+x_+","+y_+","+z_+")"); 
+	    }
+
+	    const Vertex& operator/=(float rhs) {
+               float invF = 1/rhs;
+	       x *= invF; 
+	       y *= invF; 
+	       z *= invF;
+	       return (*this);
 	    }
 
 	private:

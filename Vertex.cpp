@@ -1,6 +1,7 @@
 #include "Vertex.hpp"
 namespace radio {
     Vertex::Vertex(float x_, float y_, float z_) 
+	:normed(false)
     {
         x = x_; 
         y = y_; 
@@ -8,18 +9,17 @@ namespace radio {
     }
 
 
-    Vertex& Vertex::norm(){
+    void Vertex::norm(){
 	if (!normed){
-	    *this = (*this)/radio::abs(*this);
+	    this->operator/=(radio::abs(*this));
 	    normed = true;
 	}
-	return *this;
     }
 
     Vertex Vertex::getNormed() const {
         if (!normed)
-    	return *this;
-        return (*this)/radio::abs(*this);
+    	   return Vertex(*this);
+        return Vertex((*this)/radio::abs(*this));
     }
 
 

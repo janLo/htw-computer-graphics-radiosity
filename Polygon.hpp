@@ -5,6 +5,7 @@
 #include "Vertex.hpp"
 #include "Triangle.hpp"
 #include "BSphere.hpp"
+#include "Colour.hpp"
 
 namespace radio {
 
@@ -18,14 +19,14 @@ namespace radio {
 		Vertex& b = *(++it);
 		Vertex& a = *(++it);
 
-		triangles.push_back(Triangle(a,b,c));
+		triangles.push_back(Triangle(a,b,c, colour));
 	    }
 	}
 
 	
 	public:
-	Polygon()
-	    : vertices()
+	Polygon(const Colour& c)
+	    : vertices(), colour(c)
 	{}
 
 	inline void addVertex(const Vertex& v) {
@@ -51,6 +52,7 @@ namespace radio {
 	std::vector<Vertex> vertices;
 	std::vector<Triangle> triangles;
 	BSphere bSphere;
+	Colour colour;
 
     };
 }

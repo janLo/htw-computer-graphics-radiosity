@@ -6,6 +6,8 @@
 #include <string.h>
 #include <iostream>
 
+#include "Colour.hpp"
+
 namespace radio {
 
     void dispHelper();
@@ -15,9 +17,9 @@ namespace radio {
 
 	public:
 	    View(int w_, int h_, int argc, char** argv)
-		:buffer(new GLint[w_ * h_ * 3]), w(w_), h(h_)
+		:buffer(new GLfloat[w_ * h_ * 3]), w(w_), h(h_)
 	    {
-		::memset(buffer, 0, (sizeof(GLint) * w_ * h_ * 3));
+		::memset(buffer, 0, (sizeof(GLfloat) * w_ * h_ * 3));
 		glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB | GLUT_ALPHA | GLUT_DEPTH);
 		glutInitWindowPosition (1, 1);
 		glutInitWindowSize(w, h);
@@ -25,12 +27,15 @@ namespace radio {
 		name = argv[0];
 	    }
 
-	    inline void setPixel(int x, int y){
-		int offset = (3 * ((w * y) + (y)));
+	    inline void setPixel(int x, int y, const Colour& c){
 
-		buffer[  offset] = 255;
-		buffer[++offset] = 255;
-		buffer[++offset] = 255;
+	        //std::cout << "write Pixel: (" << x << "," << y << ")" << std::endl;
+
+		int offset = 3 * (w*y + x) ;
+
+		buffer[offset]   = c.R();
+		buffer[++offset] = c.G();
+		buffer[++offset] = c.B();
 
 
 	    }
@@ -61,20 +66,20 @@ namespace radio {
 
 	private:
 	    void glDisplayFunc(){
-		//glClear(GL_COLOR_BUFFER_BIT);
-		//glRasterPos2i(0,0);
-		//glDrawPixels(w,h,GL_RGB,GL_FLOAT,buffer);
-		//glFlush ();
+		glClear(GL_COLOR_BUFFER_BIT);
+		glRasterPos2i(0,0);
+		glDrawPixels(w,h,GL_RGB,GL_FLOAT,buffer);
+		glFlush ();
 	    }
 
 	    void glResizeFunc(int x, int y){
 		glViewport(0, 0, x, y);
 		glMatrixMode(GL_PROJECTION);        /* specifies the current matrix */
 		glLoadIdentity();                   /* Sets the currant matrix to identity */
-		gluOrtho2D(-x,x,-y,y);
+		gluOrtho2D(0,x,0,y);
 	    }
 
-	    GLint* buffer;
+	    GLfloat* buffer;
 	    int w;
 	    int h;
 	    std::string name;

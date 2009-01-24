@@ -18,7 +18,7 @@ namespace radio {
 
 	    static inline Line fromPointsNormed(const Vertex& a, const Vertex& b) {
 	        Line l(b, b - a);
-		l.normDir();
+	        l.normDir();
 		return l;
 	    }
 

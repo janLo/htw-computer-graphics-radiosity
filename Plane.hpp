@@ -16,14 +16,16 @@ namespace radio {
 
 	public:
 	    Plane(const Vertex& v1, const Vertex& v2, const Vertex& v3)
-		: normal(vertexCross(v3 - v2, v1 - v2)), d(-1*(v1 * normal))
+		: normal(vertexCross(v3 - v2, v1 - v2)), d(-(v1 * normal))
 	    {
                std::cout << "Plane from" << (v3 - v2).toString() << ", " << (v1 - v2).toString() << ": " << toString() << std::endl;
             }
 
 	    Plane(const Vertex& normal_, const Vertex point) 
-		:normal(normal_), d(point * normal)
-            {}
+		:normal(normal_), d(-(point * normal))
+            {
+//               std::cout << "Plane from" << (normal).toString() << " on " << point.toString() << ": " << toString() << std::endl;
+	    }
 
 	    class Intersect {
 		public: 
@@ -44,7 +46,7 @@ namespace radio {
 		if(fabsf(denom) < 0.01f)
 		    throw NoIntersectException();
 
-		const float t = (normal * l.getStart() + d) / -1 *denom;
+		const float t = (normal * l.getStart() + d) / -denom;
 
 		return Intersect(l.getStart() + (t * l.getDir()), t);
 	    }
@@ -74,8 +76,9 @@ namespace radio {
 	ViewPlane(const Vertex& ul_, const Vertex ur_, const Vertex ol_, float distance_, int w, int h)
 	    : Plane(ol_,ul_,ur_), ul(ul_), ur(ur_), ol(ol_), distance(distance_), prp(0,0,0), width(w), height(h)
 	{
-	    Vertex normInv(normal * -1);
-	    Vertex normDir(normInv.norm());
+	    Vertex normInv(normal * -1.0f);
+//	    Vertex normDir(normInv.norm());
+	    Vertex normDir(normInv / abs(normInv));
 	    Vertex start(ul + ((ur - ul) / 2) + ((ol - ul) / 2));
 
 	    prp = start + (distance * normDir);
@@ -137,7 +140,8 @@ namespace radio {
                     //std::cout << "p1" << pos2.toString() << std::endl;
                     points.push_back(
                             ViewPlanePoint(
-                                i, j, Line::fromPointsNormed( prp, pos2 )
+                               // i, j, Line::fromPointsNormed( prp, pos2 )
+                                i, j, Line::fromPoints( prp,pos2 )
                                 )
                             );
                 }
