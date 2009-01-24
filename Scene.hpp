@@ -74,13 +74,17 @@ namespace radio {
 				for (PolygonTriangle::PatchTriangleIterator ptIt = t.getTriangleBegin(); ptIt != t.getTriangleEnd(); ptIt++) {
 
 				    PatchTriangle& pTri = *ptIt;
-				    if(pTri.inBSphere(inter.getPoint()) ) {
+				    if(
+                                            //1 == t.triangleCount() || 
+                                            pTri.inBSphere(inter.getPoint()) ) {
 
 					// find Patch
 					for (PatchTriangle::PatchIterator paIt = pTri.getPatchBegin(); paIt != pTri.getPatchEnd(); paIt++) {
 
 					    Patch& patch = *paIt;
-					    if ( patch.inBSphere(inter.getPoint()) ) { 
+					    if ( 
+                                                    //1 == pTri.patchCount() || 
+                                                    patch.inBSphere(inter.getPoint()) ) { 
 						intersects.push_back( 
 							std::pair<Triangle,Plane::Intersect>(patch, inter) 
 							);

@@ -116,6 +116,7 @@ namespace radio {
 
 	    inline PatchIterator getPatchBegin() { return patches.begin(); }
 	    inline PatchIterator getPatchEnd()   { return patches.end();   }
+            inline int patchCount() const { return patches.size(); }
 
 	    inline bool inBSphere(const Vertex x){
 		return sphere.inSphere(x);
@@ -138,6 +139,7 @@ namespace radio {
 
 	    inline PatchTriangleIterator getTriangleBegin() { return patches.begin(); }
 	    inline PatchTriangleIterator getTriangleEnd()   { return patches.end();   }
+            inline int triangleCount() const { return patches.size(); }
 
 	private:
 	    std::vector<PatchTriangle> patches;
