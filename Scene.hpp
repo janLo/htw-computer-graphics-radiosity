@@ -45,13 +45,19 @@ namespace radio {
 		    defined = true;
 		}
 
-	        std::vector<std::pair<Triangle, Plane::Intersect> > intersects;
 
-                ViewPlane::PointIterator pit;
+                ViewPlane::PointIterator pit = viewPlane.getPointBegin();
 
+		// Points
+		/*int i;
+                #pragma omp parallel for schedule(dynamic,2) private(i)
+                for (int i = 0; i < viewPlane.numPoints(); i++){
+                    ViewPlane::ViewPlanePoint& pt = pit[i];*/
                 for (pit = viewPlane.getPointBegin(); pit != viewPlane.getPointEnd(); pit++){
                     ViewPlane::ViewPlanePoint& pt = *pit;
+	            std::vector<std::pair<Triangle, Plane::Intersect> > intersects;
 
+		    // Polygons
                     for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
                         Polygon& p = *polIt;
 
@@ -59,18 +65,35 @@ namespace radio {
 			    continue;
 			}
 
+			// PolygonTriangles
                         for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
-                            Triangle& t = *tit;
-                            const Plane& p = t.getTrianglePlane();
+			    PolygonTriangle& t = *tit;
+			    const Plane& p = t.getTrianglePlane();
 
-                            try {
+			    try {
 
 				Plane::Intersect inter(p.calcIntersect(pt.getLine()));
-                                intersects.push_back( 
-					std::pair<Triangle,Plane::Intersect>(t, inter) 
-					);
 
-                            } catch (Plane::NoIntersectException e) {
+				// PatchTriangle
+				for (PolygonTriangle::PatchTriangleIterator ptIt = t.getTriangleBegin(); ptIt != t.getTriangleEnd(); ptIt++) {
+
+				    PatchTriangle& pTri = *ptIt;
+				    if(pTri.inBSphere(inter.getPoint()) ) {
+
+					// find Patch
+					for (PatchTriangle::PatchIterator paIt = pTri.getPatchBegin(); paIt != pTri.getPatchEnd(); paIt++) {
+
+					    Patch& patch = *paIt;
+					    if ( patch.inBSphere(inter.getPoint()) ) { 
+						intersects.push_back( 
+							std::pair<Triangle,Plane::Intersect>(patch, inter) 
+							);
+					    }
+					}
+				    }
+				}
+
+				} catch (Plane::NoIntersectException e) {
                             }
                         }
 		    }
@@ -88,7 +111,6 @@ namespace radio {
 			    break;
 			}
 		    }
-		    intersects.clear();
                 }
             }
 

@@ -12,6 +12,7 @@
 namespace radio {
 
     class Patch;
+    class PatchTriangle;
 
     class Triangle {
         public:
@@ -67,6 +68,7 @@ namespace radio {
             }
 
 	    virtual ~Triangle(){}
+	    static void split(std::vector<PatchTriangle>& store, const Triangle& t);
 	    static void split(std::vector<Patch>& store, const Triangle& t);
 
         private:
@@ -88,12 +90,38 @@ namespace radio {
 	    Patch(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_)
 		:Triangle(a_, b_, c_, col, p_), mid(0,0,0), sphere(a_,b_,c_)
 		{
+		   // std::cout << "New Patch, Color: " + col.toString() << std::endl;
 		/* TODO Fläche und Mittelpunkt */
 		}
+
+	    inline bool inBSphere(const Vertex x){
+		return sphere.inSphere(x);
+	    }
 
 	private:
 	    Vertex mid;
 	    float area;
+	    BSphere sphere;
+
+    };
+
+    class PatchTriangle : public Triangle{
+	public:
+	    PatchTriangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_)
+		:Triangle(a_, b_,  c_, col, p_), sphere(a_,b_,c_)
+	    {
+		Triangle::split(patches, *this);
+	    }
+	    typedef std::vector<Patch>::iterator PatchIterator;
+
+	    inline PatchIterator getPatchBegin() { return patches.begin(); }
+	    inline PatchIterator getPatchEnd()   { return patches.end();   }
+
+	    inline bool inBSphere(const Vertex x){
+		return sphere.inSphere(x);
+	    }
+	private:
+	    std::vector<Patch> patches;
 	    BSphere sphere;
 
     };
@@ -106,13 +134,13 @@ namespace radio {
 	        Triangle::split(patches, *this);
 	    }
 
-	    typedef std::vector<Patch>::iterator PatchIterator;
+	    typedef std::vector<PatchTriangle>::iterator PatchTriangleIterator;
 
-	    inline PatchIterator getPatchBegin() { return patches.begin(); }
-	    inline PatchIterator getPatchEnd()   { return patches.end();   }
+	    inline PatchTriangleIterator getTriangleBegin() { return patches.begin(); }
+	    inline PatchTriangleIterator getTriangleEnd()   { return patches.end();   }
 
 	private:
-	    std::vector<Patch> patches;
+	    std::vector<PatchTriangle> patches;
     };
 
 

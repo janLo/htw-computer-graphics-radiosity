@@ -120,6 +120,7 @@ namespace radio {
 
         inline PointIterator getPointBegin() { return points.begin(); };
         inline PointIterator getPointEnd() { return points.end(); };
+	inline int numPoints() const { return points.size(); }
 
             virtual ~ViewPlane(){}
 	private:

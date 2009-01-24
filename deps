@@ -3,7 +3,8 @@ BSphere.o: BSphere.cpp \
 	Vertex.hpp \
 	Line.hpp
 Colour.o: Colour.cpp \
-	Colour.hpp
+	Colour.hpp \
+	Vertex.hpp
 Line.o: Line.cpp \
 	Line.hpp \
 	Vertex.hpp
@@ -50,11 +51,13 @@ Vertex.o: Vertex.cpp \
 	Vertex.hpp
 View.o: View.cpp \
 	View.hpp \
-	Colour.hpp
+	Colour.hpp \
+	Vertex.hpp
 BSphere.o: BSphere.hpp \
 	Vertex.hpp \
 	Line.hpp
-Colour.o: Colour.hpp
+Colour.o: Colour.hpp \
+	Vertex.hpp
 Line.o: Line.hpp \
 	Vertex.hpp
 Plane.o: Plane.hpp \
@@ -84,4 +87,5 @@ Triangle.o: Triangle.hpp \
 	BSphere.hpp
 Vertex.o: Vertex.hpp
 View.o: View.hpp \
-	Colour.hpp
+	Colour.hpp \
+	Vertex.hpp

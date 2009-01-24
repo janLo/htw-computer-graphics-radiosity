@@ -1,27 +1,32 @@
 #ifndef COLOUR_HPP
 #define COLOUR_HPP
 
+#include "Vertex.hpp"
+
 namespace radio {
  
-    class Colour {
+    class Colour : public Vertex {
 
 	public: 
 	    Colour(float r_, float g_, float b_) 
-		: r(r_), g(g_), b(b_)
+		: Vertex(r_, g_, b_)
+	    {}
+
+	    Colour(const Vertex& v)
+		:Vertex(v)
 	    {}
 
 	    Colour()
-		:r(0),g(0),b(0)
+		: Vertex(0,0,0)
 	    {}
 
-	    inline float R() const { return r; }
-	    inline float G() const { return g; }
-	    inline float B() const { return b; }
+	    inline float R() const { return X(); }
+	    inline float G() const { return Y(); }
+	    inline float B() const { return Z(); }
 	private:
-	    float r;
-	    float g;
-	    float b;
     };
+
+
 
 }
 

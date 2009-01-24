@@ -55,6 +55,14 @@ namespace radio {
 		return true;
 	    }
 
+	    inline bool inSphere(const Vertex v){
+		Vertex ve(v - center);
+		if ( ve*ve <= radSquare )
+		    return true;
+		return false;
+	    }
+
+
 	private:
 
 	    inline void check(const Vertex& last){
@@ -91,6 +99,7 @@ namespace radio {
 		center = minV + dist;
 
 		rad = abs((maxV - minV) / 2.0f);
+		radSquare = rad*rad;
 
 		/*std::cout << "x: " << xMin << "-" << xMax;
 		std::cout << " y: " << yMin << "-" << yMax;
@@ -107,6 +116,7 @@ namespace radio {
 
 	    Vertex center;
 	    float rad;
+	    float radSquare;
             bool initialized;
     };
 }

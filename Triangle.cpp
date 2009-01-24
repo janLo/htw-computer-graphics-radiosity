@@ -22,7 +22,7 @@ namespace radio {
 
     void Triangle::split(std::vector<Patch>& store, const Triangle& t){
 
-	float min = 5;
+	float min = 10;
 	float abLen = abs(t.b - t.a);
 	float bcLen = abs(t.c - t.b);
 	float acLen = abs(t.c - t.a);
@@ -58,6 +58,47 @@ namespace radio {
 	    split(store, Triangle(newVt, t.b, t.c, t.colour, t.p));
 	} else {
 	    store.push_back(Patch(t.a, t.b, t.c, t.colour, t.p));
+	}
+    }
+
+    void Triangle::split(std::vector<PatchTriangle>& store, const Triangle& t){
+
+	float min = 50;
+	float abLen = abs(t.b - t.a);
+	float bcLen = abs(t.c - t.b);
+	float acLen = abs(t.c - t.a);
+
+	// Split AB?
+	if ( abLen > bcLen && abLen > acLen ) {
+	    if ( abLen > min ) {
+		Vertex newVt(splitEdge(t.a,t.b));
+		split(store, Triangle(t.a, newVt, t.c, t.colour, t.p));
+		split(store, Triangle(newVt, t.b, t.c, t.colour, t.p));
+	    } else {
+		store.push_back(PatchTriangle(t.a, t.b, t.c, t.colour, t.p));
+	    }
+	    return;
+	}
+
+	// Split BC?
+	if ( bcLen > acLen ) {
+	    if ( bcLen > min ) {
+		Vertex newVt(splitEdge(t.b, t.c));
+		split(store, Triangle(t.a, newVt, t.c, t.colour, t.p));
+		split(store, Triangle(t.a, t.b, newVt, t.colour, t.p));
+	    } else {
+		store.push_back(PatchTriangle(t.a, t.b, t.c, t.colour, t.p));
+	    }
+	    return;
+	}
+
+	// Split AC?
+	if ( acLen > min ) {
+	    Vertex newVt(splitEdge(t.a, t.c));
+	    split(store, Triangle(t.a, t.b, newVt, t.colour, t.p));
+	    split(store, Triangle(newVt, t.b, t.c, t.colour, t.p));
+	} else {
+	    store.push_back(PatchTriangle(t.a, t.b, t.c, t.colour, t.p));
 	}
     }
 }
