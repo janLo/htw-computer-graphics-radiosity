@@ -25,7 +25,7 @@ namespace radio {
         Colour c1(t.colour + Colour(0.07f,0.07f,0.07f));
         Colour c2(t.colour - Colour(0.05f,0.05f,0.05f));
 
-	float min = 12;
+	float min = 10;
 	float abLen = abs(t.b - t.a);
 	float bcLen = abs(t.c - t.b);
 	float acLen = abs(t.c - t.a);
@@ -72,7 +72,7 @@ namespace radio {
 
     void Triangle::split(std::vector<PatchTriangle>& store, const Triangle& t){
 
-	float min = 70;
+	float min = 40;
 	float abLen = abs(t.b - t.a);
 	float bcLen = abs(t.c - t.b);
 	float acLen = abs(t.c - t.a);

@@ -19,7 +19,9 @@ namespace radio {
 		Z_VAL
 	    };
 
-	    Vertex(float x_, float y_, float z_);
+            Vertex(float x_, float y_, float z_)
+                : x(x_), y(y_), z(z_), normed(false)
+            {}
 
 	    void norm();
 	    Vertex getNormed() const;

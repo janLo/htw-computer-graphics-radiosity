@@ -1,12 +1,8 @@
 #include "Vertex.hpp"
 namespace radio {
-    Vertex::Vertex(float x_, float y_, float z_) 
-	:normed(false)
-    {
-        x = x_; 
-        y = y_; 
-        z = z_;
-    }
+    /*Vertex::Vertex(float x_, float y_, float z_) 
+	: x(x_), y(y_), z(z_), normed(false)
+    {}*/
 
 
     void Vertex::norm(){

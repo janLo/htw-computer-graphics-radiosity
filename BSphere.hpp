@@ -37,7 +37,7 @@ namespace radio {
 		const Vertex& c = center;
 		const Vertex diff = o - c;
 
-               d.norm();
+                d.norm();
 
 //		std::cout << abs(d)  << " " << d.toString()<< std::endl;
 

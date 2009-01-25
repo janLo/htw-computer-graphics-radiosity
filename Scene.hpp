@@ -30,10 +30,11 @@ namespace radio {
             {
 	    }
 
+            template <class T>
 	    class IntersectDistanceComparator {
 		public:
-		inline bool operator()(const std::pair<Triangle, Plane::Intersect>& a, 
-			               const std::pair<Triangle, Plane::Intersect>& b) {
+		inline bool operator()(const std::pair<T, Plane::Intersect>& a, 
+			               const std::pair<T, Plane::Intersect>& b) {
 		    return (a.second.getDistance() < b.second.getDistance());
 		}
 	    };
@@ -51,66 +52,66 @@ namespace radio {
 		// Points
                 for (pit = viewPlane.getPointBegin(); pit != viewPlane.getPointEnd(); pit++){
                     ViewPlane::ViewPlanePoint& pt = *pit;
-	            std::vector<std::pair<Triangle, Plane::Intersect> > intersects;
+	            std::vector<std::pair<PolygonTriangle*, Plane::Intersect> > intersects;
 
 		    // Polygons
                     for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
                         Polygon& p = *polIt;
 
-			if (!p.checkSphere(pt.getLine())){
-			    continue;
-			}
+                        if (!p.checkSphere(pt.getLine())){
+                            continue;
+                        }
 
-			// PolygonTriangles
+                        // PolygonTriangles
                         for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
-			    PolygonTriangle& t = *tit;
-			    const Plane& p = t.getTrianglePlane();
+                            PolygonTriangle& t = *tit;
+                            const Plane& p = t.getTrianglePlane();
 
-			    try {
+                            try {
 
-				Plane::Intersect inter(p.calcIntersect(pt.getLine()));
+                                Plane::Intersect inter(p.calcIntersect(pt.getLine()));
+                                intersects.push_back(std::pair<PolygonTriangle*,Plane::Intersect>(&t, inter));
 
-				// PatchTriangle
-				for (PolygonTriangle::PatchTriangleIterator ptIt = t.getTriangleBegin(); ptIt != t.getTriangleEnd(); ptIt++) {
-
-				    PatchTriangle& pTri = *ptIt;
-				    if(
-                                            //1 == t.triangleCount() || 
-                                            pTri.inBSphere(inter.getPoint()) ) {
-
-					// find Patch
-					for (PatchTriangle::PatchIterator paIt = pTri.getPatchBegin(); paIt != pTri.getPatchEnd(); paIt++) {
-
-					    Patch& patch = *paIt;
-					    if ( 
-                                                    //1 == pTri.patchCount() || 
-                                                    patch.inBSphere(inter.getPoint()) ) { 
-						intersects.push_back( 
-							std::pair<Triangle,Plane::Intersect>(patch, inter) 
-							);
-					    }
-					}
-				    }
-				}
-
-				} catch (Plane::NoIntersectException e) {
+                            } catch (Plane::NoIntersectException e) {
                             }
                         }
-		    }
+                    }
 
-		    std::sort(intersects.begin(), intersects.end(), IntersectDistanceComparator());
+                    std::sort(intersects.begin(), intersects.end(), IntersectDistanceComparator<PolygonTriangle*>());
 
-		    for (std::vector<std::pair<Triangle, Plane::Intersect> >::iterator iit = intersects.begin();
-			    iit != intersects.end(); iit++) {
+                    for (std::vector<std::pair<PolygonTriangle*, Plane::Intersect> >::iterator iit = intersects.begin();
+                            iit != intersects.end(); iit++) {
+                        PolygonTriangle&                              t   = *((*iit).first);
+                        Plane::Intersect&                      inter = (*iit).second;
+                        if (t.pointInTriangle(inter.getPoint())){
+                            // PatchTriangle
+                            for (PolygonTriangle::PatchTriangleIterator ptIt = t.getTriangleBegin(); ptIt != t.getTriangleEnd(); ptIt++) {
 
-			Triangle&                              tri   = (*iit).first;
-			Plane::Intersect&                      inter = (*iit).second;
+                                PatchTriangle& pTri = *ptIt;
+                                if(
+                                        pTri.inBSphere(inter.getPoint()) &&
+                                        pTri.pointInTriangle(inter.getPoint())
+                                  ) {
 
-			if (tri.pointInTriangle(inter.getPoint())) {
-			    view.setPixel(pt.getX(), pt.getY(), tri.getColour());
-			    break;
-			}
-		    }
+
+                                    // find Patch
+                                    for (PatchTriangle::PatchIterator paIt = pTri.getPatchBegin(); paIt != pTri.getPatchEnd(); paIt++) {
+
+                                        Patch& patch = *paIt;
+                                        if ( 
+                                                patch.inBSphere(inter.getPoint()) &&
+                                                patch.pointInTriangle(inter.getPoint()) 
+                                           ) { 
+                                            view.setPixel(pt.getX(), pt.getY(), patch.getColour());
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        }
+
+                    }
                 }
             }
 

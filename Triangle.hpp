@@ -90,7 +90,7 @@ namespace radio {
 	    Patch(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_)
 		:Triangle(a_, b_, c_, col, p_), mid(0,0,0), sphere(a_,b_,c_)
 		{
-		    std::cout << "New Patch, Color: " + col.toString() << std::endl;
+		//    std::cout << "New Patch, Color: " + col.toString() << std::endl;
 		/* TODO Fläche und Mittelpunkt */
 		}
 
