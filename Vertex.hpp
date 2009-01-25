@@ -2,6 +2,7 @@
 #define VERTEX_HPP
 
 #include <string>
+#include <iostream>
 #include <boost/lexical_cast.hpp>
 
 #include "math.h"
@@ -61,6 +62,11 @@ namespace radio {
 	       z *= invF;
 	       return (*this);
 	    }
+
+            inline bool equal(const Vertex& v) {
+                Vertex t(*this - v);
+                return (t.x < 1.0E-6f && t.y < 1.0E-6f && t.z < 1.0E-6f);
+            }
 
 	private:
 	    float x;

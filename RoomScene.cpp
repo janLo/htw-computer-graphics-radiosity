@@ -9,35 +9,35 @@ namespace radio {
 
         // Room
         {
-            Polygon top(Colour(0.6,0,0));
+            Polygon top(Colour(0.6,0,0), 2, 0.5);
             top.addVertex(Vertex(0,100,0));
             top.addVertex(Vertex(100,100,0));
             top.addVertex(Vertex(0,100,200));
             top.addVertex(Vertex(100,100,200));
             polygons.push_back(top);
 
-            Polygon right(Colour(0,0.6,0));
+            Polygon right(Colour(0,0.6,0), 0, 1);
             right.addVertex(Vertex(100,100,0));
             right.addVertex(Vertex(100,0,0));
             right.addVertex(Vertex(100,100,200));
             right.addVertex(Vertex(100,0,200));
             polygons.push_back(right);
 
-            Polygon bottom(Colour(0.3,0.3,0.3));
+            Polygon bottom(Colour(0.3,0.3,0.3), 0, 1);
             bottom.addVertex(Vertex(0,0,0));
             bottom.addVertex(Vertex(100,0,0));
             bottom.addVertex(Vertex(0,0,200));
             bottom.addVertex(Vertex(100,0,200));
             polygons.push_back(bottom);
 
-            Polygon left(Colour(0,0,6));
+            Polygon left(Colour(0,0,6), 0, 1);
             left.addVertex(Vertex(0,100,0));
             left.addVertex(Vertex(0,100,200));
             left.addVertex(Vertex(0,0,0));
             left.addVertex(Vertex(0,0,200));
             polygons.push_back(left);
 
-            Polygon back(Colour(0.5,0.5,0.1));
+            Polygon back(Colour(0.5,0.5,0.1), 0, 1);
             back.addVertex(Vertex(0,100,200));
             back.addVertex(Vertex(100,100,200));
             back.addVertex(Vertex(0,0,200));

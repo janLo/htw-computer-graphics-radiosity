@@ -13,7 +13,7 @@ namespace radio {
     }
 
     Vertex Vertex::getNormed() const {
-        if (!normed)
+        if (normed)
     	   return Vertex(*this);
         return Vertex((*this)/radio::abs(*this));
     }

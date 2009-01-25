@@ -19,20 +19,20 @@ namespace radio {
 		    Vertex& a = *it;
 		    Vertex& b = *(++it);
 		    Vertex& c = *(++it);
-		    triangles.push_back(PolygonTriangle(a,b,c, colour));
+		    triangles.push_back(PolygonTriangle(a,b,c, colour, light, reflex));
 		} else {
 		    Vertex& c = *it;
 		    Vertex& b = *(++it);
 		    Vertex& a = *(++it);
-		    triangles.push_back(PolygonTriangle(a,b,c, colour));
+		    triangles.push_back(PolygonTriangle(a,b,c, colour, light, reflex));
 		}
 	    }
 	}
 
 	
 	public:
-	Polygon(const Colour& c)
-	    : vertices(), colour(c)
+	Polygon(const Colour& c, float light_, float reflex_)
+	    : vertices(), colour(c), light(light_), reflex(reflex_)
 	{}
 
 	inline void addVertex(const Vertex& v) {
@@ -59,6 +59,8 @@ namespace radio {
 	std::vector<PolygonTriangle> triangles;
 	BSphere bSphere;
 	Colour colour;
+        float light;
+        float reflex;
 
     };
 }

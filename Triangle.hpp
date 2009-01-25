@@ -24,8 +24,8 @@ namespace radio {
             };
 
             Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_);
-            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col);
-            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_);
+            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, float emit_, float reflex_);
+            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_, float emit_, float reflex_);
 
 	    inline const Colour& getColour() const { return colour; }
 
@@ -70,6 +70,12 @@ namespace radio {
 	    virtual ~Triangle(){}
 	    static void split(std::vector<PatchTriangle>& store, const Triangle& t);
 	    static void split(std::vector<Patch>& store, const Triangle& t);
+            inline void addToLightSum(float add) { sum += add; }
+            inline void updateLight() { 
+                light += reflex*sum; 
+                sum = 0;
+            }
+            inline float getLight() const { return light; }
 
         private:
 
@@ -82,13 +88,17 @@ namespace radio {
             Vertex c;
             Plane p;
 	    Colour colour;
+            float emit;
+            float light;
+            float sum;
+            float reflex;
     };
 
 
     class PatchTriangle : public Triangle{
 	public:
-	    PatchTriangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_)
-		:Triangle(a_, b_,  c_, col, p_), sphere(a_,b_,c_)
+	    PatchTriangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_, float emit_, float reflex_)
+		:Triangle(a_, b_,  c_, col, p_, emit_, reflex_), sphere(a_,b_,c_)
 	    {
 		Triangle::split(patches, *this);
 	    }

@@ -37,11 +37,19 @@ namespace radio {
             void define();
             void render();
 
+            void lighten();
+
+
+
         protected:
             virtual void defScene() ;
             std::vector<Polygon> polygons;
 
         private:
+            bool findViewables(std::vector<PolygonTriangle*>& store, const PolygonTriangle& ref);
+            bool isReachable(const Vertex& a, const Vertex& b, const Vertex& ray);
+            void updateLight();
+            void runLightPass();
 
             int width;
             int height;
