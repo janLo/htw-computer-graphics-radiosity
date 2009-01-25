@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "Vertex.hpp"
-#include "Triangle.hpp"
+#include "PolygonTriangle.hpp"
 #include "BSphere.hpp"
 #include "Colour.hpp"
 

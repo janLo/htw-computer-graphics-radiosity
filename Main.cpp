@@ -1,5 +1,6 @@
 #include "Vertex.hpp"
 #include "Scene.hpp"
+#include "RoomScene.hpp"
 #include <GL/glut.h>
 
 namespace radio {
@@ -21,6 +22,7 @@ int main(int argc, char * argv[]) {
             Vertex(0,  100, 0));   // or
     /* */
     //Scene test(view,300,Vertex(0,0,0), Vertex(100,0,0), Vertex(0,100,0));
+    test.define();
     test.render();
     view.display();
     

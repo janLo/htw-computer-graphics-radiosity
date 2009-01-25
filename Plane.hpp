@@ -54,7 +54,7 @@ namespace radio {
             inline const Vertex& getNormal() const { return normal; }
             inline const float D() const {return d; } 
 
-            inline std::string toString() { 
+            inline std::string toString() const { 
                 std::string x_ = boost::lexical_cast<std::string, float>(normal.X());
                 std::string y_ = boost::lexical_cast<std::string, float>(normal.Y());
                 std::string z_ = boost::lexical_cast<std::string, float>(normal.Z());
@@ -77,12 +77,11 @@ namespace radio {
 	    : Plane(ol_,ul_,ur_), ul(ul_), ur(ur_), ol(ol_), distance(distance_), prp(0,0,0), width(w), height(h)
 	{
 	    Vertex normInv(normal * -1.0f);
-//	    Vertex normDir(normInv.norm());
 	    Vertex normDir(normInv / abs(normInv));
-	    Vertex start(ul + ((ur - ul) / 2) + ((ol - ul) / 2));
+	    Vertex start(ul + ((ur - ul) / 2.0f) + ((ol - ul) / 2.0f));
 
 	    prp = start + (distance * normDir);
-
+/*
             std::cout << "viewplane:" << toString() << std::endl;
             std::cout << "start:" << start.toString() << std::endl;
             std::cout << "dir:" << normDir.toString() << std::endl;
@@ -90,7 +89,7 @@ namespace radio {
             std::cout << "ur:" << ur.toString() << std::endl;
             std::cout << "ul:" << ul.toString() << std::endl;
             std::cout << "ol:" << ol.toString() << std::endl;
-
+*/
             generateViewPlanePoints();
 	}
 

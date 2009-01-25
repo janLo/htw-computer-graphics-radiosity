@@ -11,13 +11,24 @@ Line.o: Line.cpp \
 Main.o: Main.cpp \
 	Vertex.hpp \
 	Scene.hpp \
-	Plane.hpp \
-	Line.hpp \
 	Polygon.hpp \
-	Triangle.hpp \
-	Colour.hpp \
+	PolygonTriangle.hpp \
+	Patch.hpp \
 	BSphere.hpp \
-	View.hpp
+	Line.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Colour.hpp \
+	View.hpp \
+	RoomScene.hpp
+Patch.o: Patch.cpp \
+	Patch.hpp \
+	BSphere.hpp \
+	Vertex.hpp \
+	Line.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Colour.hpp
 Plane.o: Plane.cpp \
 	Plane.hpp \
 	Vertex.hpp \
@@ -25,20 +36,46 @@ Plane.o: Plane.cpp \
 Polygon.o: Polygon.cpp \
 	Polygon.hpp \
 	Vertex.hpp \
+	PolygonTriangle.hpp \
+	Patch.hpp \
+	BSphere.hpp \
+	Line.hpp \
 	Triangle.hpp \
 	Plane.hpp \
+	Colour.hpp
+PolygonTriangle.o: PolygonTriangle.cpp \
+	PolygonTriangle.hpp \
+	Patch.hpp \
+	BSphere.hpp \
+	Vertex.hpp \
 	Line.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Colour.hpp
+RoomScene.o: RoomScene.cpp \
+	RoomScene.hpp \
+	Scene.hpp \
+	Polygon.hpp \
+	Vertex.hpp \
+	PolygonTriangle.hpp \
+	Patch.hpp \
+	BSphere.hpp \
+	Line.hpp \
+	Triangle.hpp \
+	Plane.hpp \
 	Colour.hpp \
-	BSphere.hpp
+	View.hpp
 Scene.o: Scene.cpp \
 	Scene.hpp \
-	Vertex.hpp \
-	Plane.hpp \
-	Line.hpp \
 	Polygon.hpp \
-	Triangle.hpp \
-	Colour.hpp \
+	Vertex.hpp \
+	PolygonTriangle.hpp \
+	Patch.hpp \
 	BSphere.hpp \
+	Line.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Colour.hpp \
 	View.hpp
 Triangle.o: Triangle.cpp \
 	Triangle.hpp \
@@ -46,7 +83,8 @@ Triangle.o: Triangle.cpp \
 	Plane.hpp \
 	Line.hpp \
 	Colour.hpp \
-	BSphere.hpp
+	BSphere.hpp \
+	Patch.hpp
 Vertex.o: Vertex.cpp \
 	Vertex.hpp
 View.o: View.cpp \
@@ -60,24 +98,55 @@ Colour.o: Colour.hpp \
 	Vertex.hpp
 Line.o: Line.hpp \
 	Vertex.hpp
+Patch.o: Patch.hpp \
+	BSphere.hpp \
+	Vertex.hpp \
+	Line.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Colour.hpp
 Plane.o: Plane.hpp \
 	Vertex.hpp \
 	Line.hpp
 Polygon.o: Polygon.hpp \
 	Vertex.hpp \
-	Triangle.hpp \
-	Plane.hpp \
-	Line.hpp \
-	Colour.hpp \
-	BSphere.hpp
-Scene.o: Scene.hpp \
-	Vertex.hpp \
-	Plane.hpp \
-	Line.hpp \
-	Polygon.hpp \
-	Triangle.hpp \
-	Colour.hpp \
+	PolygonTriangle.hpp \
+	Patch.hpp \
 	BSphere.hpp \
+	Line.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Colour.hpp
+PolygonTriangle.o: PolygonTriangle.hpp \
+	Patch.hpp \
+	BSphere.hpp \
+	Vertex.hpp \
+	Line.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Colour.hpp
+RoomScene.o: RoomScene.hpp \
+	Scene.hpp \
+	Polygon.hpp \
+	Vertex.hpp \
+	PolygonTriangle.hpp \
+	Patch.hpp \
+	BSphere.hpp \
+	Line.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Colour.hpp \
+	View.hpp
+Scene.o: Scene.hpp \
+	Polygon.hpp \
+	Vertex.hpp \
+	PolygonTriangle.hpp \
+	Patch.hpp \
+	BSphere.hpp \
+	Line.hpp \
+	Triangle.hpp \
+	Plane.hpp \
+	Colour.hpp \
 	View.hpp
 Triangle.o: Triangle.hpp \
 	Vertex.hpp \
