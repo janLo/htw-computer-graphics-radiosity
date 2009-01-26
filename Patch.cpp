@@ -10,7 +10,7 @@ namespace radio {
 	sphere(a_,b_,c_)
     {
 	//light *= area;
-	//lastLight *= area;
+	lastLight = emit_;
 	 //  std::cout << "New Patch, A: " << area  << "  " << 0.5f * abs(getTrianglePlane().getNormal())  << "    " << mid.toString() << std::endl;
 	/* TODO Fläche und Mittelpunkt */
     }

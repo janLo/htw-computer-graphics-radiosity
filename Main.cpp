@@ -16,7 +16,7 @@ int main(int argc, char * argv[]) {
 
     View view(500,500, argc, argv);
     
-    RoomScene test(view,300,
+    RoomScene test(view,200,
             Vertex(0,    0, 0),  // ol
             Vertex(100,  0, 0),    // ur
             Vertex(0,  100, 0));   // or

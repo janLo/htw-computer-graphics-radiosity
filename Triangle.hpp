@@ -72,13 +72,16 @@ namespace radio {
 	    static void split(std::vector<Patch>& store, const Triangle& t);
             inline void addToLightSum(float add) { sum += add; }
             inline void updateLight() { 
-	        allSum += sum;
+	        float old = getLight();
+	        allSum = sum;
                 if (allSum/Triangle::scale > 1.0f)
 		    Triangle::scale = allSum;
                 sum = 0;
+		lastLight = getLight() - old;
+		//std::cout << lastLight << std::endl;
             }
-            //inline float getLight() const { return emit + reflex * (allSum) ; }
-            inline float getLight() const { return emit + reflex * (allSum) / Triangle::scale; }
+            inline float getLastLight() const { return lastLight ; }
+            inline float getLight() const { return emit + reflex * (allSum); }
 
         private:
 
@@ -95,13 +98,15 @@ namespace radio {
 
 	protected:
             float light;
-//            float lastLight;
+            float lastLight;
 
 	private:
             float sum;
 	    float allSum;
             float reflex;
-	    float scale;
+
+	public:
+	    static float scale;
     };
 
 

@@ -115,6 +115,7 @@ namespace radio {
 
     void Scene::lighten() {
         runLightPass();
+        runLightPass();
 //        runLightPass();
 //        runLightPass();
 //        runLightPass();
@@ -139,6 +140,7 @@ namespace radio {
 
                     for (PatchTriangle::PatchIterator paIt = pTri.getPatchBegin(); paIt != pTri.getPatchEnd(); paIt++) {
                         Patch& patch = *paIt;
+                        Vertex ni(patch.getTrianglePlane().getNormal().getNormed());
 
                         for (std::vector<PolygonTriangle*>::iterator it = viewable.begin(); it != viewable.end(); it++){
                             for (PolygonTriangle::PatchTriangleIterator ptIt2 = (*it)->getTriangleBegin(); ptIt2 != (*it)->getTriangleEnd(); ptIt2++) {
@@ -159,32 +161,28 @@ namespace radio {
 				    if(!isReachable(patch.getMid(), other.getMid(), ray, raylen, t, *(*it)))
 				      continue;
 
-                                    Vertex ni(patch.getTrianglePlane().getNormal().getNormed());
                                     Vertex nj(other.getTrianglePlane().getNormal().getNormed());
 				    Vertex c(ray.getNormed());
 
 
-				    float phiI = c * ni;
+				    float phiI = (c) * ni;
 				    float phiJ = (c * -1.0f) * nj;
-/*
-				    if (phiI < 0.0f)
+
+				    if (phiI < 0.5f)
 				      phiI = 0.0f;
-				    if (phiJ < 0.0f)
+				    if (phiJ < 0.5f)
 				      phiI = 0.0f;
-*/
-				    float ff =  (other.getArea()) * fabsf(phiI) * fabsf(phiJ) / raylen / raylen / M_PI;
-				    //if (f > 0.0f){
+
+				    //if (phiI * phiJ == M_PI && phiJ < M_PI_4)
+				      //phiI = 0.0f;
+
+				    float ff =  (other.getArea()) * phiI * phiJ / ((raylen * raylen) * M_PI);
 				    patch.addToLightSum(other.getLight() *  ff);
-				    //if (ff > 1.0f){
-				    //std::cout << ff << std::endl;
-				    //std::cout << other.getLight() << std::endl;
-				    //}
 				}
 				}
                         }
                     }
                 }
-	//	std::cout << "Triangle Ready" << std::endl;
             }
             std::cout << "Polygon Ready " << std::endl;
         }
