@@ -49,6 +49,8 @@ namespace radio {
 	    return bSphere.hitSphere(l);
 	}
 
+	inline bool getReflex() const {return reflex;}
+
         typedef std::vector<PolygonTriangle>::iterator TriangleIterator;
         
         TriangleIterator getTriangleBegin() { return triangles.begin(); }

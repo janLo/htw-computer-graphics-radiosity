@@ -62,6 +62,7 @@ namespace radio {
                     try {
 
                         Plane::Intersect inter(p.calcIntersect(pt.getLine()));
+			if( ( (p.getNormal() * pt.getLine().getStart()) + p.D() ) > 0.0f)
                         intersects.push_back(std::pair<PolygonTriangle*,Plane::Intersect>(&t, inter));
 
                     } catch (Plane::NoIntersectException e) {
@@ -123,7 +124,9 @@ namespace radio {
     void Scene::runLightPass(){
         for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
             Polygon& p = *polIt;
-	    if (p.
+	    if (0.0f >= p.getReflex())
+	        continue;
+	    
             for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
                 PolygonTriangle& t = *tit;
                 const Plane& p = t.getTrianglePlane();
@@ -145,24 +148,31 @@ namespace radio {
                                    Vertex ray(other.getMid() - patch.getMid());
                                   //  Vertex ray(patch.getMid() - other.getMid());
 
-                                    if(!isReachable(patch.getMid(), other.getMid(), ray, t, *(*it)))
-                                            continue;
+				   if(
+				       ((other.getTrianglePlane().getNormal() * patch.getMid()) + other.getTrianglePlane().D() < 0.0f) ||
+				       ((patch.getTrianglePlane().getNormal() * other.getMid()) + patch.getTrianglePlane().D() < 0.0f)
+				     )
+				     continue;
+
+				    float raylen = abs(ray);
+				    
+				    if(!isReachable(patch.getMid(), other.getMid(), ray, raylen, t, *(*it)))
+				      continue;
 
                                     Vertex ni(patch.getTrianglePlane().getNormal().getNormed());
                                     Vertex nj(other.getTrianglePlane().getNormal().getNormed());
 				    Vertex c(ray.getNormed());
 
-				    float raylen = abs(ray);
 
 				    float phiI = c * ni;
 				    float phiJ = (c * -1.0f) * nj;
-
+/*
 				    if (phiI < 0.0f)
 				      phiI = 0.0f;
 				    if (phiJ < 0.0f)
 				      phiI = 0.0f;
-
-				    float ff =  (other.getArea()) * phiI * phiJ / raylen / raylen / M_PI;
+*/
+				    float ff =  (other.getArea()) * fabsf(phiI) * fabsf(phiJ) / raylen / raylen / M_PI;
 				    //if (f > 0.0f){
 				    patch.addToLightSum(other.getLight() *  ff);
 				    //if (ff > 1.0f){
@@ -201,17 +211,15 @@ namespace radio {
 
     }
 
-    bool Scene::isReachable(const Vertex& a, const Vertex& b, const Vertex& ray, const Triangle& t1, const Triangle& t2) {
+    bool Scene::isReachable(const Vertex& a, const Vertex& b, const Vertex& ray, float len, const Triangle& t1, const Triangle& t2) {
+            Line l(a,ray.getNormed());
+
             for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
                 Polygon& p = *polIt;
-
-                Line l(a,ray.getNormed());
 
                 if (!p.checkSphere(l)){
                     continue;
                 }
-
-                float rayLenSq = ray*ray+0.001f;
 
                 for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
                     PolygonTriangle& t = *tit;
@@ -223,12 +231,10 @@ namespace radio {
                     try {
                         Plane::Intersect inter(p.calcIntersect(l));
 
-                        Vertex v(inter.getPoint() - b);
-
-                        if(
-                                (rayLenSq > (v*v)) &&
-                                t.pointInTriangle(inter.getPoint())
-                                )
+			if(
+			    (inter.getDistance() > 0.0f) &&  (inter.getDistance() < len) &&
+			    t.pointInTriangle(inter.getPoint())
+			  )
                             return false;
 
                     } catch (Plane::NoIntersectException e) {
@@ -236,7 +242,6 @@ namespace radio {
                 }
             }
             return true;
-        
     }
 
 
@@ -257,7 +262,18 @@ namespace radio {
 /*                if ( refN.equal(testN) )
                     continue;
 */
-                if( ( (p.getNormal() * tit->A()) + p.D() ) < 0.0f)
+                if( 
+		    ( ((p.getNormal() * tit->A()) + p.D() ) < 0.0f) &&
+		    ( ((p.getNormal() * tit->B()) + p.D() ) < 0.0f) &&
+		    ( ((p.getNormal() * tit->C()) + p.D() ) < 0.0f)
+		  )
+                    continue;
+
+                if( 
+		      ( ((pl.getNormal() * ref.A()) + pl.D() ) < 0.0f) &&
+		      ( ((pl.getNormal() * ref.B()) + pl.D() ) < 0.0f) &&
+		      ( ((pl.getNormal() * ref.C()) + pl.D() ) < 0.0f) 
+		  )
                     continue;
 
                 store.push_back(&(*tit));

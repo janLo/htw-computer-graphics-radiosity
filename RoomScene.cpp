@@ -47,7 +47,7 @@ namespace radio {
 
         // Block 1
         {
-        /*    Polygon top(Colour(1,0,0), 0, 0.8);
+            Polygon top(Colour(1,0,0), 0, 0.8);
             top.addVertex(Vertex(35,20,35));
             top.addVertex(Vertex(65,20,35));
             top.addVertex(Vertex(35,20,65));
@@ -73,51 +73,52 @@ namespace radio {
             back.addVertex(Vertex(35, 0,65));
             back.addVertex(Vertex(65,20,65));
             back.addVertex(Vertex(65, 0,65));
-            polygons.push_back(back);*/
+        //    polygons.push_back(back);
         }
 
 	// Light
 	{
-	    Polygon top(Colour(1,1,1), 1, 0.0);
-            top.addVertex(Vertex(45,65,55));
-            top.addVertex(Vertex(55,65,55));
-            top.addVertex(Vertex(45,65,65));
-            top.addVertex(Vertex(55,65,65));
+	    float light = 10.0f;
+	    Polygon top(Colour(1,1,1), light, 0.0);
+            top.addVertex(Vertex(45,70,55));
+            top.addVertex(Vertex(55,70,55));
+            top.addVertex(Vertex(45,70,65));
+            top.addVertex(Vertex(55,70,65));
             polygons.push_back(top);
 
-	    Polygon bottom(Colour(1,1,1), 1, 0.0);
-            top.addVertex(Vertex(45,60,55));
-            top.addVertex(Vertex(45,60,65));
-            top.addVertex(Vertex(55,60,55));
-            top.addVertex(Vertex(55,60,65));
+	    Polygon bottom(Colour(1,1,1), light, 0.0);
+            bottom.addVertex(Vertex(45,60,55));
+            bottom.addVertex(Vertex(45,60,65));
+            bottom.addVertex(Vertex(55,60,55));
+            bottom.addVertex(Vertex(55,60,65));
             polygons.push_back(bottom);
 
-	    Polygon left(Colour(1,1,1), 1, 0.0);
-            left.addVertex(Vertex(45,65,55));
-            left.addVertex(Vertex(45,65,65));
+	    Polygon left(Colour(1,1,1), light, 0.0);
+            left.addVertex(Vertex(45,70,55));
+            left.addVertex(Vertex(45,70,65));
             left.addVertex(Vertex(45,60,55));
             left.addVertex(Vertex(45,60,65));
             polygons.push_back(left);
 
-	    Polygon right(Colour(1,1,1), 1, 0.0);
-            right.addVertex(Vertex(55,65,55));
+	    Polygon right(Colour(1,1,1), light, 0.0);
+            right.addVertex(Vertex(55,70,55));
             right.addVertex(Vertex(55,60,55));
-            right.addVertex(Vertex(55,65,65));
+            right.addVertex(Vertex(55,70,65));
             right.addVertex(Vertex(55,60,65));
             polygons.push_back(right);
 
-	    Polygon front(Colour(1,1,1), 1, 0.0);
-            front.addVertex(Vertex(45,65,55));
+	    Polygon front(Colour(1,1,1), light, 0.0);
+            front.addVertex(Vertex(45,70,55));
             front.addVertex(Vertex(45,60,55));
-            front.addVertex(Vertex(55,65,55));
+            front.addVertex(Vertex(55,70,55));
             front.addVertex(Vertex(55,60,55));
             polygons.push_back(front);
 
-	    Polygon back(Colour(1,1,1), 1, 0.0);
+	    Polygon back(Colour(1,1,1), light, 0.0);
             back.addVertex(Vertex(55,60,65));
             back.addVertex(Vertex(45,60,65));
-            back.addVertex(Vertex(55,65,65));
-            back.addVertex(Vertex(45,65,65));
+            back.addVertex(Vertex(55,70,65));
+            back.addVertex(Vertex(45,70,65));
             polygons.push_back(back);
 
 	}

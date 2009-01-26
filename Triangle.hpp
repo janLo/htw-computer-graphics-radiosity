@@ -77,8 +77,8 @@ namespace radio {
 		    Triangle::scale = allSum;
                 sum = 0;
             }
+            //inline float getLight() const { return emit + reflex * (allSum) ; }
             inline float getLight() const { return emit + reflex * (allSum) / Triangle::scale; }
-            //inline float getLight() const { return emit + reflex * (allSum) / Triangle::scale; }
 
         private:
 
@@ -101,7 +101,7 @@ namespace radio {
             float sum;
 	    float allSum;
             float reflex;
-	    static float scale;
+	    float scale;
     };
 
 

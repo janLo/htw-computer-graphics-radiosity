@@ -3,7 +3,7 @@
 
 namespace radio {
 
-    float Triangle::scale = 1.0f;
+    //float Triangle::scale = 1.0f;
 
     Triangle::Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_)
 	:a(a_), b(b_), c(c_), p(b,a,c)
@@ -12,13 +12,13 @@ namespace radio {
     }
 
     Triangle::Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, float emit_, float reflex_)
-	:a(a_), b(b_), c(c_), p(b,a,c), colour(col), emit(emit_), light(emit_), allSum(0), sum(0), reflex(reflex_)
+	:a(a_), b(b_), c(c_), p(b,a,c), colour(col), emit(emit_), light(emit_), allSum(0), sum(0), reflex(reflex_), scale(1.0f)
     {
 	//std::cout << p.toString() << std::endl;
     }
 
     Triangle::Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_, float emit_, float reflex_)
-	:a(a_), b(b_), c(c_), p(p_), colour(col), emit(emit_), light(emit_), allSum(0), sum(0), reflex(reflex_)
+	:a(a_), b(b_), c(c_), p(p_), colour(col), emit(emit_), light(emit_), allSum(0), sum(0), reflex(reflex_), scale(1.0f)
     {
 	//std::cout << p.toString() << std::endl;
     }
