@@ -9,8 +9,8 @@ namespace radio {
 	area(0.5f * abs(getTrianglePlane().getNormal())), 
 	sphere(a_,b_,c_)
     {
-	//light *= area;
-	lastLight = emit_;
+	emit *= area;
+	lastLight = emit;
 	 //  std::cout << "New Patch, A: " << area  << "  " << 0.5f * abs(getTrianglePlane().getNormal())  << "    " << mid.toString() << std::endl;
 	/* TODO Fläche und Mittelpunkt */
     }

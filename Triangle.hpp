@@ -73,7 +73,7 @@ namespace radio {
             inline void addToLightSum(float add) { sum += add; }
             inline void updateLight() { 
 	        float old = getLight();
-	        allSum = sum;
+	        allSum += sum;
                 if (allSum/Triangle::scale > 1.0f)
 		    Triangle::scale = allSum;
                 sum = 0;
@@ -94,9 +94,9 @@ namespace radio {
             Vertex c;
             Plane p;
 	    Colour colour;
-            float emit;
 
 	protected:
+            float emit;
             float light;
             float lastLight;
 
