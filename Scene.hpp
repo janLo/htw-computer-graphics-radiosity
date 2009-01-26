@@ -47,7 +47,7 @@ namespace radio {
 
         private:
             bool findViewables(std::vector<PolygonTriangle*>& store, const PolygonTriangle& ref);
-            bool isReachable(const Vertex& a, const Vertex& b, const Vertex& ray);
+            bool isReachable(const Vertex& a, const Vertex& b, const Vertex& ray, const Triangle& t1, const Triangle& t2);
             void updateLight();
             void runLightPass();
 

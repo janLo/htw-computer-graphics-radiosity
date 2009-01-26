@@ -3,6 +3,8 @@
 
 namespace radio {
 
+    float Triangle::scale = 1.0f;
+
     Triangle::Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_)
 	:a(a_), b(b_), c(c_), p(b,a,c)
     {
@@ -10,13 +12,13 @@ namespace radio {
     }
 
     Triangle::Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, float emit_, float reflex_)
-	:a(a_), b(b_), c(c_), p(b,a,c), colour(col), emit(emit_), light(emit_), sum(0), reflex(reflex_)
+	:a(a_), b(b_), c(c_), p(b,a,c), colour(col), emit(emit_), light(emit_), allSum(0), sum(0), reflex(reflex_)
     {
 	//std::cout << p.toString() << std::endl;
     }
 
     Triangle::Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_, float emit_, float reflex_)
-	:a(a_), b(b_), c(c_), p(p_), colour(col), emit(emit_), light(emit_), sum(0), reflex(reflex_)
+	:a(a_), b(b_), c(c_), p(p_), colour(col), emit(emit_), light(emit_), allSum(0), sum(0), reflex(reflex_)
     {
 	//std::cout << p.toString() << std::endl;
     }
@@ -26,7 +28,7 @@ namespace radio {
        // Colour c1(t.colour + Colour(0.07f,0.07f,0.07f));
        // Colour c2(t.colour - Colour(0.05f,0.05f,0.05f));
 
-	float min = 10;
+	float min = 12;
 	float abLen = abs(t.b - t.a);
 	float bcLen = abs(t.c - t.b);
 	float acLen = abs(t.c - t.a);

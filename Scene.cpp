@@ -94,7 +94,12 @@ namespace radio {
                                         patch.inBSphere(inter.getPoint()) &&
                                         patch.pointInTriangle(inter.getPoint()) 
                                    ) { 
-                                    view.setPixel(pt.getX(), pt.getY(), patch.getColour() *(patch.getLight()/ patch.getArea()));
+                                    view.setPixel(pt.getX(), pt.getY(), 
+					patch.getColour() * (patch.getLight() ));
+					//patch.getColour() );
+					//if (patch.getLight() > 1.0f)
+					  //std::cout << patch.getLight() << std::endl;
+
                                     break;
                                 }
                             }
@@ -109,14 +114,16 @@ namespace radio {
 
     void Scene::lighten() {
         runLightPass();
-
-        runLightPass();
+//        runLightPass();
+//        runLightPass();
+//        runLightPass();
     }
 
 
     void Scene::runLightPass(){
         for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
             Polygon& p = *polIt;
+	    if (p.
             for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
                 PolygonTriangle& t = *tit;
                 const Plane& p = t.getTrianglePlane();
@@ -135,30 +142,44 @@ namespace radio {
                                 for (PatchTriangle::PatchIterator paIt2 = (*ptIt2).getPatchBegin(); paIt2 != (*ptIt2).getPatchEnd(); paIt2++) {
                                     const Patch& other = *paIt2;
 
-//                                   Vertex ray(other.getMid() - patch.getMid());
-                                    Vertex ray(patch.getMid() - other.getMid());
-/*
-                                    if(!isReachable(patch.getMid(), other.getMid(), ray))
+                                   Vertex ray(other.getMid() - patch.getMid());
+                                  //  Vertex ray(patch.getMid() - other.getMid());
+
+                                    if(!isReachable(patch.getMid(), other.getMid(), ray, t, *(*it)))
                                             continue;
-*/
-                                    Vertex i(patch.getTrianglePlane().getNormal().getNormed());
-                                    Vertex j(other.getTrianglePlane().getNormal().getNormed());
-                                    Vertex c(ray.getNormed());
-                                    float f = patch.getArea() * ((i*c)*(j*c)) / ((ray * ray) * M_PI);
-                                    //if (f > 0.0f){
-                                    patch.addToLightSum(other.getLight() * f);
-//                std::cout << i.toString() << " " << c.toString() << " " << (i*c) << std::endl;
-                //                    std::cout << ((i*c)) << std::endl;
-                                    //}
-                                }
-                            }
+
+                                    Vertex ni(patch.getTrianglePlane().getNormal().getNormed());
+                                    Vertex nj(other.getTrianglePlane().getNormal().getNormed());
+				    Vertex c(ray.getNormed());
+
+				    float raylen = abs(ray);
+
+				    float phiI = c * ni;
+				    float phiJ = (c * -1.0f) * nj;
+
+				    if (phiI < 0.0f)
+				      phiI = 0.0f;
+				    if (phiJ < 0.0f)
+				      phiI = 0.0f;
+
+				    float ff =  (other.getArea()) * phiI * phiJ / raylen / raylen / M_PI;
+				    //if (f > 0.0f){
+				    patch.addToLightSum(other.getLight() *  ff);
+				    //if (ff > 1.0f){
+				    //std::cout << ff << std::endl;
+				    //std::cout << other.getLight() << std::endl;
+				    //}
+				}
+				}
                         }
                     }
                 }
+	//	std::cout << "Triangle Ready" << std::endl;
             }
             std::cout << "Polygon Ready " << std::endl;
         }
         updateLight();
+	std::cout << "pass completed" << std::endl;
 
     }
 
@@ -180,30 +201,29 @@ namespace radio {
 
     }
 
-    bool Scene::isReachable(const Vertex& a, const Vertex& b, const Vertex& ray) {
+    bool Scene::isReachable(const Vertex& a, const Vertex& b, const Vertex& ray, const Triangle& t1, const Triangle& t2) {
             for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
                 Polygon& p = *polIt;
 
-                Line l(a,ray);
-
-                std::cout << l.getDir().toString() << "  " << ray.toString() << std::endl;
+                Line l(a,ray.getNormed());
 
                 if (!p.checkSphere(l)){
-                    std::cout << "BAR" << std::endl;
                     continue;
                 }
 
-                float rayLenSq = ray*ray;
+                float rayLenSq = ray*ray+0.001f;
 
-                // PolygonTriangles
                 for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
                     PolygonTriangle& t = *tit;
                     const Plane& p = t.getTrianglePlane();
 
+		    if (&t1 == &t || &t2 == &t)
+		        continue;
+
                     try {
                         Plane::Intersect inter(p.calcIntersect(l));
 
-                        Vertex v(inter.getPoint() - a);
+                        Vertex v(inter.getPoint() - b);
 
                         if(
                                 (rayLenSq > (v*v)) &&
@@ -212,7 +232,6 @@ namespace radio {
                             return false;
 
                     } catch (Plane::NoIntersectException e) {
-                        std::cout << "FOO" << std::endl;
                     }
                 }
             }
@@ -228,12 +247,16 @@ namespace radio {
         for(std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
             Polygon& po = *polIt;
             for (Polygon::TriangleIterator tit = po.getTriangleBegin(); tit != po.getTriangleEnd(); tit++){
+
+	        if (&(*tit) == &ref)
+		  continue;
+
                 const Plane& pl = (*tit).getTrianglePlane();
                 Vertex testN = pl.getNormal().getNormed();
 
-                if ( refN.equal(testN) )
+/*                if ( refN.equal(testN) )
                     continue;
-
+*/
                 if( ( (p.getNormal() * tit->A()) + p.D() ) < 0.0f)
                     continue;
 
