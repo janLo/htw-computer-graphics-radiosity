@@ -114,7 +114,6 @@ namespace radio {
         runLightPass();
         runLightPass();
         runLightPass();
-        //runLightPass();
     }
 
 
@@ -134,13 +133,14 @@ namespace radio {
 
                     for (PatchTriangle::PatchIterator paIt = pTri.getPatchBegin(); paIt != pTri.getPatchEnd(); paIt++) {
                         Patch& patch = *paIt;
-                        Vertex ni(patch.getTrianglePlane().getNormal().getNormed());
+                        Vertex ni(patch.getTrianglePlane().getNormedNormal());
 			std::vector<std::pair<Patch*, float> > facts;
 
-			if (0 == abs(patch.getLastLight()))
+			if (0.0f ==  abs(patch.getLastLight()))
 			    continue;
 
 			float sum = 0.0f;
+			bool corner = false;
 
                         for (std::vector<PolygonTriangle*>::iterator it = viewable.begin(); it != viewable.end(); it++){
                             for (PolygonTriangle::PatchTriangleIterator ptIt2 = (*it)->getTriangleBegin(); ptIt2 != (*it)->getTriangleEnd(); ptIt2++) {
@@ -158,12 +158,11 @@ namespace radio {
 
 				    float raylen = abs(ray);
 				    
-				    if(!isReachable(patch.getMid(), other.getMid(), ray, raylen, t, *(*it)))
+				    Vertex c(ray.getNormed());
+				    if(!isReachable(patch.getMid(), other.getMid(), ray, c, raylen, t, *(*it)))
 				      continue;
 
-                                    Vertex nj(other.getTrianglePlane().getNormal().getNormed());
-				    Vertex c(ray.getNormed());
-
+                                    Vertex nj(other.getTrianglePlane().getNormedNormal());
 
 				    float phiI = (c)  * ni;
 				    float phiJ = (c * -1.0f) * nj;
@@ -173,13 +172,28 @@ namespace radio {
 				    if (phiJ < 0.0f)
 				      phiJ = 0.0f;
 
+				    //if (raylen <=1.1f)
+				    //    raylen = 2.0f;
+
 				    float ff =  phiI * phiJ / ((raylen * raylen) * M_PI);
 
-				    facts.push_back(std::pair<Patch*, float>(&other, ff));
-				    sum += ff;
+				    //std::cout << raylen << std::endl;
+
+				    if (ff > 0.0f){
+				      //  corner |= patch.buildCorner(other);
+				        sum += ff;
+				        if(patch.buildCorner(other))
+					    ff /= 1.5;
+				        facts.push_back(std::pair<Patch*, float>(&other, ff));
+				    }
 				}
 				}
                         }
+			if (corner) {
+			  sum *= 1.5f;
+			  std::cout << "Corner" << std::endl;
+
+			}
 			for (std::vector<std::pair<Patch*, float> >::iterator it = facts.begin(); it != facts.end(); it++){
 			    (*it).first->addToLightSum(patch.getLastLight() *  ((*it).second/sum ));
 			}
@@ -211,8 +225,8 @@ namespace radio {
 
     }
 
-    bool Scene::isReachable(const Vertex& a, const Vertex& b, const Vertex& ray, float len, const Triangle& t1, const Triangle& t2) {
-            Line l(a,ray.getNormed());
+    inline bool Scene::isReachable(const Vertex& a, const Vertex& b, const Vertex& ray, const Vertex& normedRay, float len, const Triangle& t1, const Triangle& t2) {
+            Line l(a,normedRay);
 
             for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
                 Polygon& p = *polIt;
@@ -247,7 +261,7 @@ namespace radio {
 
     bool Scene::findViewables(std::vector<PolygonTriangle*>& store, const PolygonTriangle& ref){
         const Plane& p = ref.getTrianglePlane();
-        Vertex refN = p.getNormal().getNormed();
+        Vertex refN = p.getNormedNormal();
 
         for(std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
             Polygon& po = *polIt;
@@ -257,7 +271,7 @@ namespace radio {
 		  continue;
 
                 const Plane& pl = (*tit).getTrianglePlane();
-                Vertex testN = pl.getNormal().getNormed();
+                Vertex testN = pl.getNormedNormal();
 
 /*                if ( refN.equal(testN) )
                     continue;

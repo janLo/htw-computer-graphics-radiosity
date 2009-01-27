@@ -82,6 +82,28 @@ namespace radio {
             inline Colour getLastLight() const { return lastLight ; }
             inline const Colour getLight() const { return ((colour * emit) + (colour.mul(allSum))); }
 
+	    inline bool buildCorner(const Triangle& other) {
+		if ((getTrianglePlane().getNormedNormal() * other.getTrianglePlane().getNormedNormal()) != 0.0f)
+		    return false;
+
+		const Vertex* t[3] = {&a,&b,&c};
+		const Vertex* o[3] = { &(other.a), &(other.b), &(other.c) };
+
+		int match = 0;
+
+		for (int i = 0; i < 3; i++){
+		    for (int j = 0; j < 3; j++){
+			if(t[i]->equal(*o[j])){
+			    match++;
+			    //std::cout << t[i]->toString() << o[j]->toString() << std::endl;
+			}
+		    }
+		}
+
+		return (match >= 2);
+	    }
+
+
         private:
 
 	    static inline Vertex splitEdge(const Vertex& a, const Vertex& b){

@@ -37,7 +37,7 @@ namespace radio {
             left.addVertex(Vertex(0,0,100));
             polygons.push_back(left);
 
-            Polygon back(Colour(0.4,0.8,0.8), 0);
+            Polygon back(Colour(0.35,0.8,0.35), 0);
             back.addVertex(Vertex(0,100,100));
             back.addVertex(Vertex(0,0,100));
             back.addVertex(Vertex(100,100,100));

@@ -63,9 +63,11 @@ namespace radio {
 	       return (*this);
 	    }
 
-            inline bool equal(const Vertex& v) {
+            inline bool equal(const Vertex& v) const {
                 Vertex t(*this - v);
-                return (t.x < 1.0E-6f && t.y < 1.0E-6f && t.z < 1.0E-6f);
+                return (fabsf(t.x) < 1.0E-6f && 
+			fabsf(t.y) < 1.0E-6f && 
+			fabsf(t.z) < 1.0E-6f);
             }
 
 	    inline const Vertex& operator+=(const Vertex& rhs){

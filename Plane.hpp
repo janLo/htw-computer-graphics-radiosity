@@ -16,13 +16,13 @@ namespace radio {
 
 	public:
 	    Plane(const Vertex& v1, const Vertex& v2, const Vertex& v3)
-		: normal(vertexCross(v3 - v2, v1 - v2)), d(-(v1 * normal))
+		: normal(vertexCross(v3 - v2, v1 - v2)), normed(normal.getNormed()), d(-(v1 * normal))
 	    {
                //std::cout << "Plane from" << (v3 - v2).toString() << ", " << (v1 - v2).toString() << ": " << toString() << std::endl;
             }
 
 	    Plane(const Vertex& normal_, const Vertex point) 
-		:normal(normal_), d(-(point * normal))
+		:normal(normal_), normed(normal.getNormed()), d(-(point * normal))
             {
 //               std::cout << "Plane from" << (normal).toString() << " on " << point.toString() << ": " << toString() << std::endl;
 	    }
@@ -52,6 +52,7 @@ namespace radio {
 	    }
 
             inline const Vertex& getNormal() const { return normal; }
+            inline const Vertex& getNormedNormal() const { return normed; }
             inline const float D() const {return d; } 
 
             inline std::string toString() const { 
@@ -67,6 +68,7 @@ namespace radio {
             virtual ~Plane(){}
 	protected:
 	    Vertex normal;
+	    Vertex normed;
 	    float d;
 
     };
