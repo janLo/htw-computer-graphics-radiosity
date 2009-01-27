@@ -11,6 +11,10 @@ ifeq ($(USE_OMP),1)
     CXXFLAGS += -fopenmp -DUSE_OMP
     LDFLAGS += -fopenmp
 endif
+ifeq ($(USE_OMP_2),1)
+    CXXFLAGS += -fopenmp -DUSE_OMP -DUSE_OMP_2
+    LDFLAGS += -fopenmp
+endif
 
 
 #LDFLAGS += -lglut -fopenmp

@@ -49,6 +49,9 @@ namespace radio {
 	    return bSphere.hitSphere(l);
 	}
 
+#ifdef USE_OMP_2
+        inline std::vector<PolygonTriangle>& getTriangleVec() {return triangles;}
+#endif
 
         typedef std::vector<PolygonTriangle>::iterator TriangleIterator;
         

@@ -130,12 +130,23 @@ namespace radio {
 #else
        int max = polygons.size();
     
-#pragma omp parallel for schedule(dynamic,4)
+#pragma omp parallel for schedule(dynamic,2)
        for(int polIt = 0; polIt < max; polIt++){
             Polygon& p = polygons[polIt];
 #endif
+
+#ifndef USE_OMP_2
             for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
                 PolygonTriangle& t = *tit;
+#else
+                std::vector<PolygonTriangle>& polv = p.getTriangleVec();
+                int mmax = polv.size();
+
+#pragma omp parallel for schedule(dynamic,2)
+            for (int tit = 0; tit < mmax; tit++){
+                PolygonTriangle& t = polv[tit];
+#endif
+
                 const Plane& p = t.getTrianglePlane();
 
                 std::vector<PolygonTriangle*> viewable;
