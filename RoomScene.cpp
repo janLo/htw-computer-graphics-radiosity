@@ -10,38 +10,38 @@ namespace radio {
         // Room
         {
             Polygon top(Colour(1.0f,1.0f,1.0f), 0);
-            top.addVertex(Vertex(0,100,0));
-            top.addVertex(Vertex(0,100,100));
-            top.addVertex(Vertex(100,100,0));
+            top.addVertex(Vertex(  0,100,  0));
+            top.addVertex(Vertex(  0,100,100));
+            top.addVertex(Vertex(100,100,  0));
             top.addVertex(Vertex(100,100,100));
             polygons.push_back(top);
 
             Polygon right(Colour(0.7,0.0,0.2), 0);
-            right.addVertex(Vertex(100,100,0));
+            right.addVertex(Vertex(100,100,  0));
             right.addVertex(Vertex(100,100,100));
-            right.addVertex(Vertex(100,0,0));
-            right.addVertex(Vertex(100,0,100));
+            right.addVertex(Vertex(100,  0,  0));
+            right.addVertex(Vertex(100,  0,100));
             polygons.push_back(right);
 
             Polygon bottom(Colour(0.7,0.7,0.7), 0);
-            bottom.addVertex(Vertex(0,0,0));
-            bottom.addVertex(Vertex(100,0,0));
-            bottom.addVertex(Vertex(0,0,200));
+            bottom.addVertex(Vertex(  0,0,  0));
+            bottom.addVertex(Vertex(100,0,  0));
+            bottom.addVertex(Vertex(  0,0,100));
             bottom.addVertex(Vertex(100,0,100));
             polygons.push_back(bottom);
 
             Polygon left(Colour(0.4,0.4,0.7), 0);
-            left.addVertex(Vertex(0,100,0));
-            left.addVertex(Vertex(0,0,0));
+            left.addVertex(Vertex(0,100,  0));
+            left.addVertex(Vertex(0,  0,  0));
             left.addVertex(Vertex(0,100,100));
-            left.addVertex(Vertex(0,0,100));
+            left.addVertex(Vertex(0,  0,100));
             polygons.push_back(left);
 
             Polygon back(Colour(0.35,0.8,0.35), 0);
-            back.addVertex(Vertex(0,100,100));
-            back.addVertex(Vertex(0,0,100));
+            back.addVertex(Vertex(  0,100,100));
+            back.addVertex(Vertex(  0,  0,100));
             back.addVertex(Vertex(100,100,100));
-            back.addVertex(Vertex(100,0,100));
+            back.addVertex(Vertex(100,  0,100));
             polygons.push_back(back);
         }
 
