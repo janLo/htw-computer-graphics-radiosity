@@ -1,5 +1,9 @@
 #include <cmath>
 
+#ifdef USE_OMP
+    #include <omp.h>
+#endif
+
 #include "Scene.hpp"
 #include "Colour.hpp"
 #include "Vertex.hpp"
@@ -114,13 +118,22 @@ namespace radio {
         runLightPass();
         runLightPass();
         runLightPass();
+        runLightPass();
     }
 
 
     void Scene::runLightPass(){
+
+#ifndef USE_OMP
         for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
             Polygon& p = *polIt;
-	    
+#else
+       int max = polygons.size();
+    
+#pragma omp parallel for schedule(dynamic,4)
+       for(int polIt = 0; polIt < max; polIt++){
+            Polygon& p = polygons[polIt];
+#endif
             for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
                 PolygonTriangle& t = *tit;
                 const Plane& p = t.getTrianglePlane();

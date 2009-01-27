@@ -6,6 +6,13 @@ else
 CXXFLAGS += -O3 -mtune=native -msse  -mfpmath=sse -masm=intel -mpc32 -finline-functions -finline-functions-called-once -finline-small-functions
 LDFLAGS += -lglut -O3 -mtune=native -msse  -mfpmath=sse -masm=intel -mpc32 -finline-functions -finline-functions-called-once -finline-small-functions
 endif
+
+ifeq ($(USE_OMP),1)
+    CXXFLAGS += -fopenmp -DUSE_OMP
+    LDFLAGS += -fopenmp
+endif
+
+
 #LDFLAGS += -lglut -fopenmp
 
 radiosity: ${OBJS}

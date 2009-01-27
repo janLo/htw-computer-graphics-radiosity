@@ -209,7 +209,7 @@ namespace radio {
 	// Light
 	{
 	    float light  = 15.0f;
-	          light  = 7.5f;
+	    //      light  = 7.5f;
 	    
 	    Vertex a(45,80,45);
 	    Vertex b(45,70,45);
