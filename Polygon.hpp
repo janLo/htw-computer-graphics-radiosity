@@ -19,20 +19,20 @@ namespace radio {
 		    Vertex& a = *it;
 		    Vertex& b = *(++it);
 		    Vertex& c = *(++it);
-		    triangles.push_back(PolygonTriangle(a,b,c, colour, light, reflex));
+		    triangles.push_back(PolygonTriangle(a,b,c, colour, light));
 		} else {
 		    Vertex& c = *it;
 		    Vertex& b = *(++it);
 		    Vertex& a = *(++it);
-		    triangles.push_back(PolygonTriangle(a,b,c, colour, light, reflex));
+		    triangles.push_back(PolygonTriangle(a,b,c, colour, light));
 		}
 	    }
 	}
 
 	
 	public:
-	Polygon(const Colour& c, float light_, float reflex_)
-	    : vertices(), colour(c), light(light_), reflex(reflex_)
+	Polygon(const Colour& c, float light_)
+	    : vertices(), colour(c), light(light_)
 	{}
 
 	inline void addVertex(const Vertex& v) {
@@ -49,7 +49,6 @@ namespace radio {
 	    return bSphere.hitSphere(l);
 	}
 
-	inline bool getReflex() const {return reflex;}
 
         typedef std::vector<PolygonTriangle>::iterator TriangleIterator;
         
@@ -62,7 +61,6 @@ namespace radio {
 	BSphere bSphere;
 	Colour colour;
         float light;
-        float reflex;
 
     };
 }

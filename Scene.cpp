@@ -16,7 +16,7 @@ namespace radio {
         p1.addVertex(Vertex( 60, 60,  8));
         polygons.push_back(p1);
 */
-        Polygon p2(Colour(0,1,0), 0, 0.5);
+        Polygon p2(Colour(0,1,0), 0);
         p2.addVertex(Vertex( 10, 10, 4));
         p2.addVertex(Vertex( 10, 20, 4));
         p2.addVertex(Vertex( 20, 10, 4));
@@ -86,7 +86,6 @@ namespace radio {
                                 pTri.pointInTriangle(inter.getPoint())
                           ) {
 
-
                             // find Patch
                             for (PatchTriangle::PatchIterator paIt = pTri.getPatchBegin(); paIt != pTri.getPatchEnd(); paIt++) {
 
@@ -96,8 +95,9 @@ namespace radio {
                                         patch.pointInTriangle(inter.getPoint()) 
                                    ) { 
                                     view.setPixel(pt.getX(), pt.getY(), 
-					patch.getColour() * (patch.getLight()/Triangle::scale ));
+					//patch.getColour() * (patch.getLight()/Triangle::scale ));
 					//patch.getColour() );
+					patch.getLight() );
                                     break;
                                 }
                             }
@@ -114,14 +114,13 @@ namespace radio {
         runLightPass();
         runLightPass();
         runLightPass();
+        //runLightPass();
     }
 
 
     void Scene::runLightPass(){
         for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
             Polygon& p = *polIt;
-	    if (0.0f >= p.getReflex())
-	        continue;
 	    
             for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
                 PolygonTriangle& t = *tit;
@@ -138,7 +137,7 @@ namespace radio {
                         Vertex ni(patch.getTrianglePlane().getNormal().getNormed());
 			std::vector<std::pair<Patch*, float> > facts;
 
-			if (0 == patch.getLastLight())
+			if (0 == abs(patch.getLastLight()))
 			    continue;
 
 			float sum = 0.0f;
@@ -172,32 +171,18 @@ namespace radio {
 				    if (phiI < 0.0f)
 				      phiI = 0.0f;
 				    if (phiJ < 0.0f)
-				      phiI = 0.0f;
-
-				    //if (phiI * phiJ == M_PI && phiJ < M_PI_4)
-				      //phiI = 0.0f;
+				      phiJ = 0.0f;
 
 				    float ff =  phiI * phiJ / ((raylen * raylen) * M_PI);
+
 				    facts.push_back(std::pair<Patch*, float>(&other, ff));
 				    sum += ff;
-				    //std::cout << ff << std::endl;
-				    //other.addToLightSum(patch.getLight() *  ff);
 				}
 				}
                         }
-/*
-			float sum;
-			for (std::vector<std::pair<Patch*, float> >::iterator it = facts.begin(); it != facts.end(); it++){
-			    sum  += (*it).second;
-			}*/
-//			std::cout << sum << std::endl;
 			for (std::vector<std::pair<Patch*, float> >::iterator it = facts.begin(); it != facts.end(); it++){
 			    (*it).first->addToLightSum(patch.getLastLight() *  ((*it).second/sum ));
 			}
-
-
-
-
                     }
                 }
             }

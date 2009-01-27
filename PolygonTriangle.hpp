@@ -7,8 +7,8 @@
 namespace radio {
     class PolygonTriangle : public Triangle {
         public:
-	    PolygonTriangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, float emit_, float reflex_)
-		:Triangle(a_, b_,  c_, col, emit_, reflex_)
+	    PolygonTriangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, float emit_)
+		:Triangle(a_, b_,  c_, col, emit_)
 	    {
 	        Triangle::split(patches, *this);
 		std::cout << "New Polygon Triangle, Normal: " << getTrianglePlane().toString() <<  std::endl;

@@ -68,6 +68,19 @@ namespace radio {
                 return (t.x < 1.0E-6f && t.y < 1.0E-6f && t.z < 1.0E-6f);
             }
 
+	    inline const Vertex& operator+=(const Vertex& rhs){
+		x+=rhs.x; 
+		y+=rhs.y; 
+		z+=rhs.z;
+		return *this;
+	    }
+
+	    inline Vertex mul(const Vertex& rhs) const{
+		return Vertex(x*rhs.x, y*rhs.y, z*rhs.z);
+	    }
+
+
+
 	private:
 	    float x;
 	    float y;

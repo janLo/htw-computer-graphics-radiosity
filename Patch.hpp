@@ -10,7 +10,7 @@ namespace radio {
     class Patch : public Triangle {
 
 	public:
-	    Patch(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_, float emit_, float reflex_);
+	    Patch(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_, float emit_);
 
 	    inline bool inBSphere(const Vertex x){
 		return sphere.inSphere(x);

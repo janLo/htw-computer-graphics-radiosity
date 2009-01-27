@@ -24,8 +24,8 @@ namespace radio {
             };
 
             Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_);
-            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, float emit_, float reflex_);
-            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_, float emit_, float reflex_);
+            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, float emit_);
+            Triangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_, float emit_);
 
 	    inline const Colour& getColour() const { return colour; }
 
@@ -70,18 +70,17 @@ namespace radio {
 	    virtual ~Triangle(){}
 	    static void split(std::vector<PatchTriangle>& store, const Triangle& t);
 	    static void split(std::vector<Patch>& store, const Triangle& t);
-            inline void addToLightSum(float add) { sum += add; }
+            inline void addToLightSum(const Colour& add) { 
+	        sum += add; 
+	    }
             inline void updateLight() { 
-	        float old = getLight();
+	        Colour old = getLight();
 	        allSum += sum;
-                if (allSum/Triangle::scale > 1.0f)
-		    Triangle::scale = allSum;
-                sum = 0;
+                sum = Colour(0.0f, 0.0f, 0.0f);
 		lastLight = getLight() - old;
-		//std::cout << lastLight << std::endl;
             }
-            inline float getLastLight() const { return lastLight ; }
-            inline float getLight() const { return emit + reflex * (allSum); }
+            inline Colour getLastLight() const { return lastLight ; }
+            inline const Colour getLight() const { return ((colour * emit) + (colour.mul(allSum))); }
 
         private:
 
@@ -97,23 +96,18 @@ namespace radio {
 
 	protected:
             float emit;
-            float light;
-            float lastLight;
+            Colour lastLight;
 
 	private:
-            float sum;
-	    float allSum;
-            float reflex;
-
-	public:
-	    static float scale;
+            Colour sum;
+	    Colour allSum;
     };
 
 
     class PatchTriangle : public Triangle{
 	public:
-	    PatchTriangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_, float emit_, float reflex_)
-		:Triangle(a_, b_,  c_, col, p_, emit_, reflex_), sphere(a_,b_,c_)
+	    PatchTriangle(const Vertex& a_, const Vertex& b_, const Vertex& c_, const Colour& col, const Plane& p_, float emit_)
+		:Triangle(a_, b_,  c_, col, p_, emit_), sphere(a_,b_,c_)
 	    {
 		Triangle::split(patches, *this);
 	    }
