@@ -232,8 +232,15 @@ namespace radio {
     }
 
     void Scene::updateLight() {
+#ifndef USE_OMP
         for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
             Polygon& p = *polIt;
+#else
+        int max = polygons.size();
+#pragma omp parallel for schedule(dynamic,4)
+        for (int i = 0; i < max; i++){
+            Polygon& p = polygons[i];
+#endif
             for (Polygon::TriangleIterator tit = p.getTriangleBegin(); tit != p.getTriangleEnd(); tit++){
                 PolygonTriangle& t = *tit;
                 const Plane& p = t.getTrianglePlane();
