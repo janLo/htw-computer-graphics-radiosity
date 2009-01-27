@@ -32,7 +32,7 @@ namespace radio {
 	
 	public:
 	Polygon(const Colour& c, float light_)
-	    : vertices(), colour(c), light(light_)
+	    : vertices(), colour(c), light(light_), enabled(true)
 	{}
 
 	inline void addVertex(const Vertex& v) {
@@ -49,6 +49,10 @@ namespace radio {
 	    return bSphere.hitSphere(l);
 	}
 
+	inline bool isEnabled() const { return enabled; }
+	inline void disable() { enabled = false; }
+
+
 #ifdef USE_OMP_2
         inline std::vector<PolygonTriangle>& getTriangleVec() {return triangles;}
 #endif
@@ -64,6 +68,7 @@ namespace radio {
 	BSphere bSphere;
 	Colour colour;
         float light;
+	bool enabled;
 
     };
 }

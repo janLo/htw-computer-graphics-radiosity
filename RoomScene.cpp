@@ -43,6 +43,14 @@ namespace radio {
             back.addVertex(Vertex(100,100,100));
             back.addVertex(Vertex(100,  0,100));
             polygons.push_back(back);
+
+            Polygon front(Colour(0.1,0.1,0.1), 0);
+            front.addVertex(Vertex(  0,100,0));
+            front.addVertex(Vertex(  0,  0,0));
+            front.addVertex(Vertex(100,100,0));
+            front.addVertex(Vertex(100,  0,0));
+	    front.disable();
+            polygons.push_back(front);
         }
 
         // Block 1

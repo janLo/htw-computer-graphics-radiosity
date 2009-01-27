@@ -54,7 +54,10 @@ namespace radio {
             for (std::vector<Polygon>::iterator polIt = polygons.begin(); polIt != polygons.end(); polIt++){
                 Polygon& p = *polIt;
 
-                if (!p.checkSphere(pt.getLine())){
+                if (
+		    (!p.isEnabled()) || 
+		    (!p.checkSphere(pt.getLine()))
+		    ){
                     continue;
                 }
 
