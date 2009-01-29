@@ -31,11 +31,136 @@ Komplexaufgabe: Beleuchtungsverfahren}
 \tableofcontents
 
 \chapter{Aufgabe}
-
 \section{Wortlaut}
+\subsection{Aufgabe}
+Es ist ein System zu entwickeln, das die Beleuchtungsrechnung für eine dreidimensionale
+Szene auf der Basis von C und OpenGL unter Umgehung der OpenGL-
+Schattierungsfunktionen selbst durchführt.
 
+\subsection{Durchführung}
+Die Arbeiten können über das Semester verteilt parallel zu den übrigen Praktikumsaufgaben
+ausgeführt werden und sind zum Ende der Lehrveranstaltungszeit abzuschließen. Zur
+Implementation können alle in C und OpenGL angebotenen Mittel eingesetzt werden mit
+Ausnahme der Oberflächen, Lichtquellen und Materialien einbeziehenden automatischen
+Schattierungsfunktionen.
 
+\subsection{Schwerpunkte}
+Folgende grundlegende Aufgaben sind obligatorisch zu lösen:
+
+\begin{enumerate}
+    \item Definition eines darzustellenden ebenen Objektes im Raum
+    \item Definition einer Lichtquelle im Raum
+    \item Definition eines Betrachterstandpunktes im Raum
+    \item Definition einer Projektionsfläche im Raum
+    \item Festlegung von Datenstrukturen für alle Objekte
+    \item Erstellung eines Algorithmus, der die Szene aus Sicht des Betrachters darstellt, indem
+	für jedes Pixel der Projektionsfläche in Abhängigkeit von dem darzustellenden Objekt
+	und der Lichtquelle ein Farbwert berechnet wird
+    \item Implementation der Datenstrukturen und des Algorithmus in C und OpenGL
+    \item Test des implementierten Systems mit verschiedenen Objektkonstellationen und
+	Parametereinstellungen
+    \item Anfertigung einer Kurzdokumentation
+\end{enumerate}
+Folgende ergänzende Aufgaben können optional gelöst werden:
+\begin{enumerate}
+    \item Einbeziehung von gekrümmten Objekten
+    \item Verwendung von farbigen Flächen und Lichtquellen
+    \item Verwendung von Texturen
+    \item Einbeziehung mehrerer Objekte und Lichtquellen
+    \item Berechnung von Schatten und Transparenz
+    \item Einbeziehung von Reflexionen
+    \item Einbeziehung von Refraktionen
+    \item Bewegung von Objekten, Lichtquellen oder Betrachter
+\end{enumerate}
+
+\subsection{Ergebnis}
+Das entwickelte System ist nach Abschluss der Arbeiten im Quelltext bereitzustellen und am
+Computer zu demonstrieren.
+
+\section{Erfragte Zusätze}
+Folgende Zusätzliche Fakten wuden zu dem Beleg erfragt:
+\begin{enumerate}
+    \item Die Implementierung kann auch in C++ erfolgen.
+    \item Das Rendern der Szene muss selbst erfolgen, OpenGL ist lediglich zum 
+	Anzeigen des Pixel-Puffers zu verwenden.
+    \item Die Wahl des Verfahrens zum Rendern des Bildes ist nicht
+	vorgeschrieben, es müssen keine Füll- oder Linienraster-Algorithmen
+	implementiert werden.	
+\end{enumerate}
 
 \chapter{Umsetzung}
+\section{Allgemeines}
+Zor Umsetzung der voriegenden Aufgabe wurde C++ als Programmiersprache gerählt.
+Diese hat gegenüber C Verschiedene Vorteile, welche die Implementierung
+vereinfachen und den Programmcode robuster machen. Dies ist zum Beispiel das
+Klassenkonzept, welches es erlaubt, Objekte, wie Dreiecke, Vektoren oder Ebenen
+mit den zugehörigen Operationen zu kapseln. Das Konzept der Operatorüberladung
+wiederum macht das Arbeiten mit diesen Objekten sehr einfach. So ist eine
+Addition der Vektorobjekte $u$ und $v$ einfach als $u+v$ im Code darstellbar.
+Desweiteren erlaubt diese Kapselung den einfachen Austausch einzelner
+Algorithmen durch effizientere. So ist es problemlos möglich, alle
+Vektoroperationen auf die Vektorerweiterungen (z.B. SSE) moderner Prozessoren 
+abzubilden und das Programm dadurch zu beschleunigen.
 
+\section{Szene}
+Die Szene wird in der Funktion \texttt{defScene()} der Klasse \texttt{Scene}
+definiert. Diese Funktion ist als Virtual deklariert. Dies hat den Vorteil, das
+bei einer neuen Szene lediglich eine neue Klasse erstellt werden muss, welche
+von \texttt{Scene} erbt und die oben genannte Funktion überschreibt.
+
+Die Definition der Szene erfolgt in Polygonen. Polygone können beliebig viele
+Ecken haben. Zu beachten ist aber, das Polygone als TriangleStrips implementiert
+sind. Das bedeutet, das die ersten drei Punkte zu einem und jeder weitere Punkt 
+mit den beiden letzten Punkten zu einem weiterem Dreieck verbundn werden.
+
+Polygone werden durch die Klasse \texttt{Polygon} repräsentiert. Ein Polygon
+bekommt bei seiner Initialisierung einen Farbwert sowie einen Licht-Abgabe-Wert.
+Die Punkte des Poligons werden als \texttt{Vertex} mit der Funktion
+\texttt{addVertex()} zu den momentanem Polygon hinzugefügt. Zuletzt muss das
+Polygon mittels \texttt{push\_back()} zu der Liste der Polygone hinzugefügt
+werden.
+
+Zu beachten ist, das die ersten drei Punkte des Polygons in draufsicht gegen den
+Uhrzeigersinn festgelegt werden müssen.
+
+Die Dreiecke, welche bei der Definition der Punkte eines Polygones angelegt
+werden, werden automatisch in unterDreiecke einer vorgegebenen Maximalen
+Kantenlänge und diese wiederum in Patches einer maximalen vorgegebenen
+Kantenlänge geteilt. Dies geschieht, in dem die länste Kante gesucht wird und,
+falls sie länger als der Schwellwert ist, der Punkt in der Mitte dieser Strecke
+berechnet wird und die Funktion zum Teilen mit jeweils zwei der Punkte des
+urprünglichen Dreieckes und dem neuen Punkt aufgerufen wird. Ist der Schwellwert
+erreicht, so wird das Dreieck in eine Liste hinzugefügt. Die Schwellwerte sind
+in der Datei \texttt{Triangle.cpp} anpassbar.
+
+Dadurch wird eine Hirarchie von Dreiecken erstellt (\texttt{Polygon} 
+$\rightarrow$ \texttt{PolygonTriangle} $\rightarrow$ \texttt{PatchTriangle} 
+$\rightarrow$ \texttt{Patch}), welche die Anzahl der zu berechnenden und zu
+Prüfenden Schnittpunkte wesentlich reduziert. Diese Berechnungen sind sowohl bei
+der Sichtbarkeitsberechnung während der Projektion, als auch bei der
+Lichtverfolgung während der Beleuchtung erforderlich. Diese Prozesse werden
+dadurch wesentlich beschleunigt.
+
+\section{Projektionseinstellungen}
+Für die Projektion wird eine Sichtebene definiert. Diese wird durch die Klasse
+\texttt{ViewPlane} repräsentiert. Eine Sichtebene wird duh drei Punkte
+($\vec{a}$, $\vec{b}$ und $\vec{c}$) definiert. Diese drei Punkte spannen die 
+Ebene auf und bilden zwei Vektoren, die die Höhe ($h = $) und Breite ($b = $) der 
+Ebene definieren. Zudätzlich wird der Abstand ($d$) des 
+Projektions-Referenzpunktes angegeben. Dieser Punkt wird als mittig hinter der
+Ebene liegend berechnet:
+$\vec{prp} = ()<++>$
+Zudem wird die Anzahl der Pixel in $x$ und $y$ richtung
+berechnet.
+
+\section{Beleuchtung (Radiosity)}
+% Algo
+
+\section{Projektion}
+% Algo
+
+\begin{appendix}
+\chapter{Anhang}
+\section{Bilder}
+\end{appendix}
 \end{document}
