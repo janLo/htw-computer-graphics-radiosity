@@ -10,9 +10,9 @@
 \usepackage{hyperref}
 %\usepackage{floatflt}
 \usepackage{graphicx}
-%\usepackage{amsmath}
-%\usepackage{amssymb}
-%\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
 %\usepackage{listings}
 
 \setkomafont{caption}{\footnotesize\linespread{1}\selectfont}
@@ -96,7 +96,7 @@ vereinfachen und den Programmcode robuster machen. Dies ist zum Beispiel das
 Klassenkonzept, welches es erlaubt, Objekte, wie Dreiecke, Vektoren oder Ebenen
 mit den zugehörigen Operationen zu kapseln. Das Konzept der Operatorüberladung
 wiederum macht das Arbeiten mit diesen Objekten sehr einfach. So ist eine
-Addition der Vektorobjekte $u$ und $v$ einfach als $u+v$ im Code darstellbar.
+Addition der Vektorobjekte $u$ und $v$ einfach als $u + v$ im Code darstellbar.
 Desweiteren erlaubt diese Kapselung den einfachen Austausch einzelner
 Algorithmen durch effizientere. So ist es problemlos möglich, alle
 Vektoroperationen auf die Vektorerweiterungen (z.B. SSE) moderner Prozessoren 
@@ -124,14 +124,14 @@ Zu beachten ist, das die ersten drei Punkte des Polygons in draufsicht gegen den
 Uhrzeigersinn festgelegt werden müssen.
 
 Die Dreiecke, welche bei der Definition der Punkte eines Polygones angelegt
-werden, werden automatisch in unterDreiecke einer vorgegebenen Maximalen
+werden, werden automatisch in Unterdreiecke einer vorgegebenen Maximalen
 Kantenlänge und diese wiederum in Patches einer maximalen vorgegebenen
-Kantenlänge geteilt. Dies geschieht, in dem die länste Kante gesucht wird und,
+Kantenlänge geteilt. Dies geschieht, in dem die längste Kante gesucht wird und,
 falls sie länger als der Schwellwert ist, der Punkt in der Mitte dieser Strecke
-berechnet wird und die Funktion zum Teilen mit jeweils zwei der Punkte des
-urprünglichen Dreieckes und dem neuen Punkt aufgerufen wird. Ist der Schwellwert
-erreicht, so wird das Dreieck in eine Liste hinzugefügt. Die Schwellwerte sind
-in der Datei \texttt{Triangle.cpp} anpassbar.
+berechnet wird ($\frac{(p_1 - p_2)}{2}$) und die Funktion zum Teilen mit jeweils zwei 
+der Punkte des urprünglichen Dreieckes und dem neuen Punkt aufgerufen wird. 
+Ist der Schwellwert erreicht, so wird das Dreieck in eine Liste hinzugefügt. 
+Die Schwellwerte sind in der Datei \texttt{Triangle.cpp} anpassbar.
 
 Dadurch wird eine Hirarchie von Dreiecken erstellt (\texttt{Polygon} 
 $\rightarrow$ \texttt{PolygonTriangle} $\rightarrow$ \texttt{PatchTriangle} 
@@ -141,26 +141,108 @@ der Sichtbarkeitsberechnung während der Projektion, als auch bei der
 Lichtverfolgung während der Beleuchtung erforderlich. Diese Prozesse werden
 dadurch wesentlich beschleunigt.
 
+Zu jedem Dreieck (unabhängig von der Hirarchieebene) wird die, durch die drei
+Punkte aufgespannte Ebene ($E$) (representiert durch \texttt{Plane}) gebildet 
+mit der zugehörigen Normalen ($\vec{n}$) gebildet:
+\begin{eqnarray*}
+    E &=& n_1x + n_2y + n_3z + d\\
+    \vec{n} &=& (\vec{b} - \vec{a}) \times (\vec{c} - \vec{a})\\
+    d &=& -1 * (\vec{n} \cdot \vec{a})
+\end{eqnarray*}
+Diese werden anschließend zur Schnittpunktberechnung benötigt.
+
+Zudem wird zu jedem \texttt{Polygon}, \texttt{PatchTriangle} und
+\texttt{Patch} eine umgebende Kugel (\texttt{BSphere}) gebildet. Diese wird
+benötigt, um den Aufwand bei der Schnittpunktberechnung zu senken, da sich
+Schnittpunkte mit Kugeln einfacher berechnen lassen als Schnittpunkte mit
+Dreiecken. Eine \texttt{BSphere} besteht nur aus dem Ortsvektor des
+Mittelpunktes der Kugel und dem Radius.
+
 \section{Projektionseinstellungen}
 Für die Projektion wird eine Sichtebene definiert. Diese wird durch die Klasse
-\texttt{ViewPlane} repräsentiert. Eine Sichtebene wird duh drei Punkte
-($\vec{a}$, $\vec{b}$ und $\vec{c}$) definiert. Diese drei Punkte spannen die 
-Ebene auf und bilden zwei Vektoren, die die Höhe ($h = $) und Breite ($b = $) der 
-Ebene definieren. Zudätzlich wird der Abstand ($d$) des 
-Projektions-Referenzpunktes angegeben. Dieser Punkt wird als mittig hinter der
-Ebene liegend berechnet:
-$\vec{prp} = ()<++>$
-Zudem wird die Anzahl der Pixel in $x$ und $y$ richtung
-berechnet.
+\texttt{ViewPlane} repräsentiert. Eine Sichtebene (mit der Normale $n$) wird die 
+drei Punkte ($\vec{a}$, $\vec{b}$ und $\vec{c}$) definiert. Diese drei Punkte 
+spannen die Ebene auf und bilden zwei Vektoren, die die Höhe ($h = |\vec{b} - \vec{a}|$) 
+und Breite ($b = |\vec{c} - \vec{a}|$) der Ebene definieren. Zusätzlich wird 
+der Abstand ($d$) des Projektions-Referenzpunktes ($\vec{p}$) angegeben. Dieser 
+Punkt wird als mittig hinter der Ebene liegend berechnet:
+$$\vec{p} = \vec{a} + \frac{\vec{c} - \vec{a}}{2} + \frac{\vec{b} - \vec{a}}{2}
+- d * \frac{\vec{n}}{|\vec{n}|}$$
+
+Zudem wird die Anzahl der Pixel in $x$ und $y$ Richtung übergeben. Anschließend 
+werden Faktoren ($s = \frac{h}{y}$, $t = \frac{w}{x}$) gebildet, um jede 
+Pixelposition ($\vec{m}$) in dem Sichtfenster durch ein Produkt aus einem Vektor 
+und dem Produkt aus Pixeloffset ($\vartriangle x$, $\vartriangle y$) und den 
+Faktoren beschreiben zu können:
+$$\vec{m} = (\vartriangle x * t * (\vec{c} - \vec{a})) + (\vartriangle y * s * 
+(\vec{b} - \vec{a}))$$
+
+Jetzt wird für jedes Pixel ein Vektor vom Projektions-Referenzpunkt durch die
+Pixelposition in die Szene gebildet. Aus diesem Vektor wird anschließend eine
+Gerade (\texttt{Line}) gebildet ($\vec{p} + u * (\vec{m} - \vec{p})$). Diese
+Vektoren werden beim Projektionsprozess benötigt (siehe \ref{sec:proj}).o
+
+Die eigentliche Anzeige wird von der Klasse \texttt{View} übernommen, welche
+alle Pixeldaten in einem Puffer hält und mit einem mal per 
+\texttt{glDrawPixel()} azeigt.
 
 \section{Beleuchtung (Radiosity)}
+Zur Beleuchtung der Stene wurde das Radiosity-Verfahren implementiert. Dieses
+berechnet. Dabei wird für je zwei Patches die Menge der von dem einen aus das
+andere Patch abgestrahlte Energie berechnet. Die abgestrahlte Energie des
+Patches $j$ ergibt sich dabei aus dem Eigenleuchten plus der reflektierten 
+Strahlung und kann mit folgender Gleichung beschrieben werden:
+$$B_i = E_i + \rho_i \sum_{j=1}^n B_jF_{ji},\quad 1 \le i \le n$$
+Dabei bezeichnet $B_i$ die Gesamtstrahlung des Patches $i$, $B_j$ die des
+Patches $j$, $E_i$ das Eigenleuchten des Patches $i$ und $F_{ij}$ den Formfaktor
+von $j$ nach $i$. Dieser Formfaktor wird wie folgt berechnet:
+$$F_{s,e} = \frac{1}{A_s}\int_{v\in A_e}\int_{u\in A_s} \frac{1}{\pi r^2} 
+\cos\phi_u\cos\phi_v V(u,v) \,\mathrm dA_s \mathrm dA_e$$
+Wobei $A_{e}$ die Fläche des lichtempfangenden und $A_s$ die des sendenen
+Patches bezeichnet. Die Winken $\phi_u$ und $\phi_v$ stellen hier die
+Schnittwinken zwischen den Normalen und dem Verbindungsvektor der Patches dar.
+
+Dieses doppelte Integral läst sich näherungsweise durch die Gleichung:
+$$F_{s,e} \approx A_e \frac{\cos\phi_u\cos\phi_v d_{u,v}}{\pi r^2}$$
+berechnen. Diese sehr einfache Näherung ist jedoch nur für Patches mit sehr
+kleiner Fläche und großer Entfernung korrekt. Daher müssen einige Anpassungen
+vorgenommen werden, welche durch den Korrekturfaktor $d_{u,v}$ beschrieben
+werden.
+
+Diese Korrektur wird im vorliegendem Programm durch zwei Maßnamhmen versucht zu
+realisieren. Das erste ist eine Normierung der Summe Aller Formfaktoren zu einem
+sendenen Patch auf eins. Dadurch wird sichergestellt, das kein Patch mehr als
+seine eigene Energie abgeben kann. Das zweite ist eine Maßnahme, welche das Bild
+vor allem in den Ecken verbessert. Es wurde beobachtet (siehe \ref{fig:ff_corner}), 
+das Patches, welche direkt orthogonal aneinander grenzen, falsche (zu hohe) 
+Formfaktoren und dadurch zu viel Licht aufaddiert bekommen. Daher wird für je
+zwei Patches bei der Formfaktorberechnung überprüft, ob der Fall der
+orthogonalen Angrenzung zutrifft. Ist dies der Fall, so wird der aktuelle
+Formfaktor durch $1,5$ gereilt, ohne die Gesamtsumme zu ändern. Dadurch werden
+subjektiv realistischere Bilder generiert (siehe \ref{fig:ff_correct}). 
+
+Der Algorithmus zur Radiosity berechnung iteriert zuerst über alle Polygone und
+für jedes \texttt{Polygon} über alle \texttt{PolygonTriangle}s. 
 % Algo
 
-\section{Projektion}
+\section{Projektion}\label{sec:proj}
 % Algo
 
 \begin{appendix}
 \chapter{Anhang}
 \section{Bilder}
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=12cm]{img/wrong_ff.png}
+    \caption{Falsche Formfaktoren in den Ecken.}
+    \label{fig:ff_corner}
+  \end{figure}
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=12cm]{img/correct_ff.png}
+    \caption{Links: falsche Formfaktoren, Rechts: korrigierte
+    Formfaktoren.}
+    \label{fig:ff_correct}
+  \end{figure}
 \end{appendix}
 \end{document}
