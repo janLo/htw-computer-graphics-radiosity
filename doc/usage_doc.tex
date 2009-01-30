@@ -80,7 +80,7 @@ Das entwickelte System ist nach Abschluss der Arbeiten im Quelltext bereitzustel
 Computer zu demonstrieren.
 
 \section{Erfragte Zusätze}
-Folgende Zusätzliche Fakten wuden zu dem Beleg erfragt:
+Folgende zusätzliche Fakten wurden zu dem Beleg erfragt:
 \begin{enumerate}
     \item Die Implementierung kann auch in C++ erfolgen.
     \item Das Rendern der Szene muss selbst erfolgen, OpenGL ist lediglich zum 
@@ -92,14 +92,14 @@ Folgende Zusätzliche Fakten wuden zu dem Beleg erfragt:
 
 \chapter{Umsetzung}
 \section{Allgemeines}
-Zor Umsetzung der voriegenden Aufgabe wurde C++ als Programmiersprache gerählt.
+Zur Umsetzung der vorliegenden Aufgabe wurde C++ als Programmiersprache gewählt.
 Diese hat gegenüber C Verschiedene Vorteile, welche die Implementierung
-vereinfachen und den Programmcode robuster machen. Dies ist zum Beispiel das
+vereinfachen und den Programmcode robuster machen. Das ist zum Beispiel das
 Klassenkonzept, welches es erlaubt, Objekte, wie Dreiecke, Vektoren oder Ebenen
 mit den zugehörigen Operationen zu kapseln. Das Konzept der Operatorüberladung
 wiederum macht das Arbeiten mit diesen Objekten sehr einfach. So ist eine
 Addition der Vektorobjekte $u$ und $v$ einfach als $u + v$ im Code darstellbar.
-Desweiteren erlaubt diese Kapselung den einfachen Austausch einzelner
+Des weiteren erlaubt diese Kapselung den einfachen Austausch einzelner
 Algorithmen durch effizientere. So ist es problemlos möglich, alle
 Vektoroperationen auf die Vektorerweiterungen (z.B. SSE) moderner Prozessoren 
 abzubilden und das Programm dadurch zu beschleunigen.
@@ -109,12 +109,12 @@ als Bild \ref{fig:all} abgebildet.
 
 \section{Szene}
 Die Szene wird in der Funktion \texttt{defScene()} der Klasse \texttt{Scene}
-definiert. Diese Funktion ist als Virtual deklariert. Dies hat den Vorteil, das
+definiert. Diese Funktion ist als \texttt{virtual} deklariert. Dies hat den Vorteil, das
 bei einer neuen Szene lediglich eine neue Klasse erstellt werden muss, welche
 von \texttt{Scene} erbt und die oben genannte Funktion überschreibt.
 
 Die Definition der Szene erfolgt in Polygonen. Polygone können beliebig viele
-Ecken haben. Zu beachten ist aber, das Polygone als TriangleStrips implementiert
+Ecken (Punkte) haben. Zu beachten ist aber, das Polygone als TriangleStrips implementiert
 sind. Das bedeutet, das die ersten drei Punkte zu einem und jeder weitere Punkt 
 mit den beiden letzten Punkten zu einem weiterem Dreieck verbunden werden.
 
@@ -125,23 +125,23 @@ Die Punkte des Polygons werden als \texttt{Vertex} mit der Funktion
 Polygon mittels \texttt{push\_back()} zu der Liste der Polygone hinzugefügt
 werden.
 
-Zu beachten ist, das die ersten drei Punkte des Polygons in draufsicht gegen den
+Zu beachten ist, das die ersten drei Punkte des Polygons in Draufsicht gegen den
 Uhrzeigersinn festgelegt werden müssen.
 
-Die Dreiecke, welche bei der Definition der Punkte eines Polygones angelegt
+Die Dreiecke, welche bei der Definition der Punkte eines Polygons angelegt
 werden, werden automatisch in Unterdreiecke einer vorgegebenen Maximalen
-Kantenlänge und diese wiederum in Patches einer maximalen vorgegebenen
-Kantenlänge geteilt. Dies geschieht, in dem die längste Kante gesucht wird und,
+Kantenlänge und diese wiederum in Patches einer weiteren vorgegebenen maximalen
+Kantenlänge geteilt. Dies geschieht, in dem die längste Kante gesucht und,
 falls sie länger als der Schwellwert ist, der Punkt in der Mitte dieser Strecke
 ($\vec{p}_m$) berechnet wird:
 $$\vec{p}_m = \vec{p}_2 + \frac{(\vec{p}_1 - \vec{p}_2)}{2}$$
-und die Funktion zum Teilen mit jeweils zwei der Punkte des urprünglichen 
-Dreieckes und dem neuen Punkt aufgerufen wird. 
+Anschließend wird die Funktion zum Teilen mit jeweils zwei der Punkte des 
+ursprünglichen Dreiecks und dem neuen Punkt aufgerufen erneut aufgerufen. 
 Ist der Schwellwert erreicht, so wird das Dreieck in eine Liste hinzugefügt. 
 Die Schwellwerte sind in der Datei \texttt{Triangle.cpp} anpassbar (siehe
 \ref{fig:patches}).
 
-Dadurch wird eine Hirarchie von Dreiecken erstellt (\texttt{Polygon} 
+Dadurch wird eine Hierarchie von Dreiecken erstellt (\texttt{Polygon} 
 $\rightarrow$ \texttt{PolygonTriangle} $\rightarrow$ \texttt{PatchTriangle} 
 $\rightarrow$ \texttt{Patch}), welche die Anzahl der zu berechnenden und zu
 Prüfenden Schnittpunkte wesentlich reduziert. Diese Berechnungen sind sowohl bei
@@ -149,8 +149,8 @@ der Sichtbarkeitsberechnung während der Projektion, als auch bei der
 Lichtverfolgung während der Beleuchtung erforderlich. Diese Prozesse werden
 dadurch wesentlich beschleunigt.
 
-Zu jedem Dreieck (unabhängig von der Hirarchieebene) wird die, durch die drei
-Punkte aufgespannte Ebene ($E$) (representiert durch \texttt{Plane}) gebildet 
+Zu jedem Dreieck (unabhängig von der Hierarchieebene) wird die, durch die drei
+Punkte aufgespannte Ebene ($E$) (repräsentiert durch \texttt{Plane})  
 mit der zugehörigen Normalen ($\vec{n}$) gebildet:
 \begin{eqnarray*}
     E &=& n_1x + n_2y + n_3z + d\\
@@ -159,8 +159,8 @@ mit der zugehörigen Normalen ($\vec{n}$) gebildet:
 \end{eqnarray*}
 Diese werden anschließend zur Schnittpunktberechnung benötigt.
 
-Zudem wird zu jedem \texttt{Polygon}, \texttt{PatchTriangle} und
-\texttt{Patch} eine umgebende Kugel (\texttt{BSphere}) gebildet. Diese wird
+Zudem wird zu jedem \texttt{Polygon}, \texttt{PatchTriangle} sowie
+\texttt{Patch} eine das Objekt umgebende Kugel (\texttt{BSphere}) gebildet. Diese wird
 benötigt, um den Aufwand bei der Schnittpunktberechnung zu senken, da sich
 Schnittpunkte mit Kugeln einfacher berechnen lassen als Schnittpunkte mit
 Dreiecken. Eine \texttt{BSphere} besteht nur aus dem Ortsvektor des
@@ -173,12 +173,12 @@ hineinsehen möchte.
 
 \section{Projektionseinstellungen}
 Für die Projektion wird eine Sichtebene definiert. Diese wird durch die Klasse
-\texttt{ViewPlane} repräsentiert. Eine Sichtebene (mit der Normale $n$) wird die 
+\texttt{ViewPlane} repräsentiert. Eine Sichtebene (mit der Normale $n$) wird durch 
 drei Punkte ($\vec{a}$, $\vec{b}$ und $\vec{c}$) definiert. Diese drei Punkte 
-spannen die Ebene auf und bilden zwei Vektoren, die die Höhe ($h = |\vec{b} - 
+spannen die Ebene auf und bilden zwei Vektoren, welche die Höhe ($h = |\vec{b} - 
 \vec{a}|$) und Breite ($b = |\vec{c} - \vec{a}|$) der Ebene definieren (siehe
 \ref{fig:view}). Zusätzlich wird der Abstand ($d$) des 
-Projektions-Referenzpunktes ($\vec{p}$) angegeben. Dieser Punkt wird als mittig 
+Projektions-Referenzpunkts ($\vec{p}$) angegeben. Dieser Punkt wird als mittig 
 hinter der Ebene liegend berechnet:
 $$\vec{p} = \vec{a} + \frac{\vec{c} - \vec{a}}{2} + \frac{\vec{b} - \vec{a}}{2}
 - d * \frac{\vec{n}}{|\vec{n}|}$$
@@ -194,16 +194,16 @@ $$\vec{m} = (\vartriangle x * t * (\vec{c} - \vec{a})) + (\vartriangle y * s *
 Jetzt wird für jedes Pixel ein Vektor vom Projektions-Referenzpunkt durch die
 Pixelposition in die Szene gebildet. Aus diesem Vektor wird anschließend eine
 Gerade (\texttt{Line}) gebildet ($\vec{p} + u * (\vec{m} - \vec{p})$). Diese
-Vektoren werden beim Projektionsprozess benötigt (siehe \ref{sec:proj}).o
+Vektoren werden beim Projektionsprozess benötigt (siehe \ref{sec:proj}).
 
 Die eigentliche Anzeige wird von der Klasse \texttt{View} übernommen, welche
 alle Pixeldaten in einem Puffer hält und mit einem mal per 
-\texttt{glDrawPixel()} azeigt.
+\texttt{glDrawPixel()} anzeigt.
 
 \section{Beleuchtung (Radiosity)}
 \subsection{Generell}
-Zur Beleuchtung der Stene wurde das Radiosity-Verfahren implementiert. Dieses
-berechnet. Dabei wird für je zwei Patches die Menge der von dem einen aus das
+Zur Beleuchtung der Szene wurde das Radiosity-Verfahren implementiert.  Dabei 
+wird für je zwei Patchs die Menge der von dem einen auf das
 andere Patch abgestrahlte Energie berechnet. Die abgestrahlte Energie des
 Patches $j$ ergibt sich dabei aus dem Eigenleuchten plus der reflektierten 
 Strahlung und kann mit folgender Gleichung beschrieben werden:
@@ -213,27 +213,27 @@ Patches $j$, $E_i$ das Eigenleuchten des Patches $i$ und $F_{ij}$ den Formfaktor
 von $j$ nach $i$. Dieser Formfaktor wird wie folgt berechnet:
 $$F_{s,e} = \frac{1}{A_s}\int_{v\in A_e}\int_{u\in A_s} \frac{1}{\pi r^2} 
 \cos\phi_u\cos\phi_v V(u,v) \,\mathrm dA_s \mathrm dA_e$$
-Wobei $A_{e}$ die Fläche des lichtempfangenden und $A_s$ die des sendenen
+Wobei $A_{e}$ die Fläche des licht empfangenden und $A_s$ die des sendenden
 Patches bezeichnet. Die Winken $\phi_u$ und $\phi_v$ stellen hier die
-Schnittwinken zwischen den Normalen und dem Verbindungsvektor der Patches dar.
+Schnittwinkel zwischen den Normalen und dem Verbindungsvektor der Patches dar.
 
-Dieses doppelte Integral läst sich näherungsweise durch die Gleichung:
+Dieses doppelte Integral lässt sich näherungsweise durch die Gleichung:
 $$F_{s,e} \approx A_e \frac{\cos\phi_u\cos\phi_v d_{u,v}}{\pi r^2}$$
 berechnen. Diese sehr einfache Näherung ist jedoch nur für Patches mit sehr
 kleiner Fläche und großer Entfernung korrekt. Daher müssen einige Anpassungen
 vorgenommen werden, welche durch den Korrekturfaktor $d_{u,v}$ beschrieben
 werden.
 
-Diese Korrektur wird im vorliegendem Programm durch zwei Maßnamhmen versucht zu
+Diese Korrektur wird im vorliegendem Programm durch zwei Maßnahmen versucht zu
 realisieren. Das erste ist eine Normierung der Summe Aller Formfaktoren zu einem
-sendenen Patch auf eins. Dadurch wird sichergestellt, das kein Patch mehr als
+sendenden Patch auf eins. Dadurch wird sichergestellt, das kein Patch mehr als
 seine eigene Energie abgeben kann. Das zweite ist eine Maßnahme, welche das Bild
 vor allem in den Ecken verbessert. Es wurde beobachtet (siehe \ref{fig:ff_corner}), 
 das Patches, welche direkt orthogonal aneinander grenzen, falsche (zu hohe) 
 Formfaktoren und dadurch zu viel Licht aufaddiert bekommen. Daher wird für je
 zwei Patches bei der Formfaktorberechnung überprüft, ob der Fall der
 orthogonalen Angrenzung zutrifft. Ist dies der Fall, so wird der aktuelle
-Formfaktor durch $1,5$ gereilt, ohne die Gesamtsumme zu ändern. Dadurch werden
+Formfaktor durch $1,5$ geteilt, ohne die Gesamtsumme zu ändern. Dadurch werden
 subjektiv realistischere Bilder generiert (siehe \ref{fig:ff_correct}). 
 
 \subsection{Algorithmus}
@@ -248,38 +248,38 @@ Dreieckspunkte hinter der Ebene des Dreiecks liegen. Ist dies der Fall, so ist
 das Dreieck nicht sichtbar und muss nicht beachtet werden.
 
 Anschließend wird über jedes \texttt{Patch} $i$ jedes \texttt{PatchTriangle}s
-iteriert. Für jedes \texttt{Patch} wirdi, wenn die abzugebende Energie des
+iteriert. Für jedes \texttt{Patch} wird, wenn die abzugebende Energie des
 Patches $i$ größer $0$ ist, die Liste aller Potentiell sichtbaren
-Dreiecke durchlaufen und auch da wieder jedes \texttt{PatchTriangle} und alle
+Dreiecke durchlaufen und auch hier wieder jedes \texttt{PatchTriangle} und alle
 Patches ($j$). 
 
 Für die Patches $i$ und $j$ wird jetzt der Verbindungsvektor \texttt{ray}
 gebildet und anschließend die prinzipielle Erreichbarkeit $V$ der Flächen 
-über die Lage der Mittelpunkte der Dreiecke zu der Ebene des anderen Dreieckes 
-berechnet. für das Dreieck $i$ und $j$ mit den Mittelpunkten $\vec{m}_{i,j}$ und
+über die Lage der Mittelpunkte der Dreiecke zu der Ebene des anderen Dreiecks 
+berechnet. Für das Dreieck $i$ und $j$ mit den Mittelpunkten $\vec{m}_{i,j}$ und
 den Normalen $\vec{n}_{i,j}$ sehen diese Ausdrücke wie folgt aus:
 \begin{eqnarray*}
   V_{ij} &=& (\vec{n}_i * \vec{m}_j * d_i) < 0\\
   V_{ji} &=& (\vec{n}_j * \vec{m}_i * d_j) < 0   
 \end{eqnarray*}
 Dies entspricht einem Einsetzen der Vektorkomponenten der Mittelpunkte in die
-Ebenengleichung der surch die drei Dreiekspunkte des anderen Dreieckes
+Ebenengleichung der durch die drei Dreieckspunkte des anderen Dreiecks
 aufgespannten Ebene.
 
 Wurde eine Prinzipielle Sichtbarkeit festgestellt, so wird die Länge
 \texttt{raylen} des Verbindungsvektors und der normierte Verbindungsvektor
-berechnet. Anschließend wird die sichtbarkeit mit der Funktion
+berechnet. Anschließend wird die Sichtbarkeit mit der Funktion
 \texttt{isReachable()} ermittelt.
 
 In dieser Funktion werden alle \texttt{PolygonTriangle}s, die die Patches $i$
 und $j$ nicht enthalten durchgegangen. Für jedes dieser Dreiecke wird getestet,
 ob die Verbindungsgerade es schneidet. Dabei werden die Kugeln um die Polygone
 genutzt, so kann erst überprüft werden, ob eine teure Schnittpunktberechnung
-überhaupt nötig ist. Anschließennd wird der Schnittpunkt mit der Dreiecksebene 
+überhaupt nötig ist. Anschließend wird der Schnittpunkt mit der Dreiecksebene 
 berechnet und getestet ob er sich auf dem Verbindungsstück der Gerade liegt. Ist
 dies der Fall, so wird getestet, ob sich der Schnittpunkt wirklich in dem
-Dreieck befindet. Ist dies der Fall so wird false (nicht erreichbar)
-zurückgegeben. Wird kein Schnittpunkt gefunden der in irgendeinem dreieck auf
+Dreieck befindet. Ist auch das der Fall so wird false (nicht erreichbar)
+zurückgegeben. Wird kein Schnittpunkt gefunden der in irgendeinem Dreieck auf
 der Verbindungslinie liegt, so wird true (erreichbar) zurück gegeben.
 
 Im Falle der Sichtbarkeit werden die Schnittwinkel $\phi_i$ und $\phi_j$ 
@@ -294,39 +294,39 @@ Der Formfaktor wird, wenn er größer $0$ ist, zu dem entsprechenden Patch in
 einer Liste gespeichert und zu der Summe der Gesamtformfaktoren addiert.
 
 Zusätzlich wird geprüft, ob für die zwei Patches die oben genannte 
-Korrekturmaßnahmne für orthoginal aneinander grenzende Patches gilt. Dazu wird 
+Korrekturmaßnahmne für orthogonal aneinander grenzende Patches gilt. Dazu wird 
 zuerst der Winkel zwischen den beiden Normalen der Dreiecksebenen berechnet. 
 Wird ein rechter Winkel festgestellt, so wird überprüft, ob die Dreiecke zwei 
 Punkte gemeinsam haben. Ist dies der Fall, wird die Maßnahme angewendet.
 
 Anschließend werden alle Formfaktoren so normiert angewendet, das die
-Gesammtsumme eins beträgt. Dazu werden die Formfaktoren $F_{ji}$ surch die
+Gesamtsumme eins beträgt. Dazu werden die Formfaktoren $F_{ji}$ durch die
 Gesamtsumme $S$ geteilt und mit dem Radiosity-Wert $\vartriangle B_i$ aus der
-letzten Iteration des Patches $i$ multipliziert. Dieser Wert wird aus die 
-Summe $\vartriangle B_j$ des Patches $j$ für diese Iteration aufaddiert:
+letzten Beleuchtungs-Iteration des Patches $i$ multipliziert. Dieser Wert wird aus der
+Summe $\vartriangle B_j$ des Patches $j$ für diese Beleuchtungs-Iteration aufaddiert:
 $$\vartriangle{B_j} = \vartriangle{B_j} + \frac{F_{ji}}{S} * \vartriangle B_i$$
 
-Nach einem solchem Durchlauf wird die Funktion \texttt{updateLight()}
+Nach einem kompletten wird die Funktion \texttt{updateLight()}
 aufgerufen, welche wieder über alle Patches iteriert und die Summen der letzten
-Iteration auf die Gesamtsummen anwendet.
+Beleuchtungs-Iteration auf die Gesamtsummen anwendet.
 
 Hier kann man erkennen, das während der Beleuchtungsberechnung mehrere
 Radiosity-Summen verwendet werden:
 \begin{itemize}
   \item Die Summe der Gesamtstrahlung. Sie wird mit der Eigenstrahlung des
-    Polygons initialisiert und nach jeder Iteration um die Summe der
+    Polygons initialisiert und nach jeder Beleuchtungs-Iteration um die Summe der
     hinzugekommen Strahlung erhöht.
   \item Die Summe der Strahlung aus der letzten Iteration. Sie wird ebenfalls
-    mit der Eigenstrahlung initialisiert und bekommt nach jeder Iteration den
-    Wert der Summen aus der letzten Iteration zugewiesen.
-  \item Die Summe der Strahlung aus der Aktuellen Iteration. Auf diese wird
-    während der Iteration die hinzukommende Strahlung aufaddiert. Sie wird zu
-    Beginn und nach jeder Iteration mit $0$ initialisiert.
+    mit der Eigenstrahlung initialisiert und bekommt nach jeder Beleuchtungs-Iteration den
+    Wert der Summen aus der letzten Beleuchtungs-Iteration zugewiesen.
+  \item Die Summe der Strahlung aus der Aktuellen Beleuchtungs-Iteration. Auf diese wird
+    während der Beleuchtungs-Iteration die hinzukommende Strahlung aufaddiert. Sie wird zu
+    Beginn und nach jeder Beleuchtungs-Iteration mit $0$ initialisiert.
 \end{itemize}
-Diese Verfahrensweise mit den drei Summen, welche nach den Iterationen
+Diese Verfahrensweise mit den drei Summen, welche nach den Beleuchtungs-Iterationen
 aktualisiert werden wurde als am besten für subjektiv gute Bilder befunden.
 
-Mit Iteration ist ein Durchlauf des kompletten oben beschriebenem Algorithmus
+Mit Beleuchtungs-Iteration ist ein Durchlauf des kompletten oben beschriebenem Algorithmus
 gemeint. Die Anzahl der Durchläufe ist fest in der Funktion \texttt{lighten()} 
 festgelegt. Durch hinzufügen von Aufrufen von \texttt{runLightPass()} kann diese
 verändert werden (siehe \ref{fig:iter}).
@@ -340,22 +340,22 @@ Lichtreflektionen verursacht.
 
 Um dies zu vereinfachen ist der Radiositywert, wie die Farben von der Klasse
 \texttt{Color}, welche lediglich ein \texttt{Vertex} mit anderem Namen ist, also
-ein Vektor. So können Farben die überladenen Operatoren der \texttt{Vertex}
-Klasse nutzen.
+ein Vektor. So können Farben die überladenen Operatoren der \texttt{Vertex}-Klasse 
+nutzen.
 
-Die Gesamtbeleuchtung der Szene kann durch den Emit-Wert der Lichtemittierenden
+Die Gesamtbeleuchtung der Szene kann durch den Emit-Wert der Licht emittierenden
 Flächen eingestellt werden (siehe \ref{fig:light}). Dieser Wert wirkt sich auf
 die komplette Szene aus.
 
 \section{Projektion}\label{sec:proj}
 
 Die Projektion der Szene erfolgt nach dem Beleuchten. Als Verfahren zur
-Projektion kommt Raycasting zum einsatz. Das bedeutet, die Szene wird vom
+Projektion kommt Raycasting zum Einsatz. Das bedeutet, die Szene wird vom
 Projektions-Referenzpunkt durch die Sichtebene für jedes Pixel abgerastert. Dazu
 werden die oben genannten Geraden durch jedes Pixel der Sichtebene verwendet.
 
 Diese Geraden wurden beim Initialisieren der Sichtebene alle in eine Liste
-einfefügt. Diese Liste wird jetzt durchlaufen. Für jede Gerade werden alle
+eingefügt. Diese Liste wird jetzt durchlaufen. Für jede Gerade werden alle
 Polygone durchlaufen. Für alle eingeschalteten Polygone wird geprüft, ob die
 momentane Gerade die umgebende Kugel schneidet.  Ist dies der Fall, so wird die
 Liste aller \texttt{PolygonTriangle}s dieses Polygons durchgegangen und für
@@ -372,8 +372,8 @@ nicht weiter durchsucht, da durch die Sortierung dieses ja das Dreieck ist, was
 der Sichtebene an dem betrachtetem Punkt am nächsten ist.
 
 Jetzt wird das Patch gesucht, welches der Strahl an diesem Punkt schneidet. Um
-den Aufwand zu minimieren wird daher zuerst nach dem \texttt{PatchTriangle}
-gesucht. Auch hier wird wieder Rechenzeit gespaart, indem vorerst nur die Kufeln
+den Aufwand zu minimieren wird zuerst nach dem \texttt{PatchTriangle}
+gesucht. Auch hier wird wieder Rechenzeit gespart, indem vorerst nur die Kugeln
 um die Dreiecke betrachtet werden. Dazu wird jeweils der Abstand zwischen dem
 Mittelpunkt der Kugel und dem Schnittpunkt mit der Ebene berechnet. Ist dieser
 größer als der Radius der Kugel, so wird das Dreieck nicht weiter betrachtet. 
@@ -382,13 +382,13 @@ Dreieck liegt.
 
 Ist dies der Fall, so werden die Patches dieses \texttt{PatchTriangle}s
 durchlaufen und genauso wie bei dem \texttt{PatchTriangle} zuerst getestet, ob
-der Schnittpunkt in der Kugel liegt und anschließend, im Erfolgsfall, getestet
+der Schnittpunkt in der Kugel liegt und anschließend im Erfolgsfall getestet
 ob der Schnittpunkt tatsächlich in dem Dreieck liegt. Ist dies der Fall, so wird
 das Pixel an der aktuellen Position mit der Farbe des aktuellen Patches gefüllt.
 
 Dadurch wird das Komplette Bild gerendert. Durch die Sortierung wird immer nur
 das Objekt, was an der aktuellen Position der Sichtebene am nächsten ist
-gezeichnet. Furch das Bilden der Rastervektoren zwischen dem Referenzpunkt und
+gezeichnet. Durch das Bilden der Rastervektoren zwischen dem Referenzpunkt und
 der Position auf der Sichtebene entsteht automatisch eine perspektivische
 Projektion.
 
@@ -398,20 +398,20 @@ Um zu testen ob eine Gerade ein Dreieck schneidet wird zuerst der Schnittpunkt
 $\vec{p}$ der Ebene $E$ mit der Normalen $\vec{n}$ und der Ebenengleichung $E =
 ax + by + cz + d$, welche die drei Punkte des Dreiecks aufspannen und der Gerade 
 $G$ mit der Geradengleichung $\vec{o} + t*\vec{r}$, wobei $\vec{o}$ der 
-Ortsvektor und $\vec{r}$ der Richtungsvector der Geraden berechnet:
+Ortsvektor und $\vec{r}$ der Richtungsvektor der Geraden ist, berechnet:
 \begin{eqnarray*}
     s       &=& -\frac{\vec{n} \cdot \vec{o} + d}{\vec{n} \cdot \vec{d}}\\
     \vec{p} &=& \vec{o} + s * \vec{d}
 \end{eqnarray*}
-Wobei der Nenner der ersten Gleichung $\vec{n} \cdot \vec{d}$ dabei zuerst
-ausgewertet wird. Ist dieser kleiner null kann die Berechnung sofort abgebrochen
+Dabei wird der Nenner der ersten Gleichung $\vec{n} \cdot \vec{d}$ zuerst
+ausgewertet. Ist dieser kleiner null kann die Berechnung sofort abgebrochen
 werden, da kein Schnittpunkt vorliegt. In diesem Fall liegt die Gerade In der
 Ebene oder Parallel dazu.
 
 In jedem anderem Fall wird geprüft, ob der Schnittpunkt in dem Dreieck liegt.
-Dazu wird mit der Normalen der Ebene die die drei Punkte aufspannen und jeweils
-einem der Vektoren zwischen jeweils zwei Punkten eine Weitere Ebene so gebildet,
-das die Normale dieser Ebene in das Dreieck zeigt.
+Dazu wird mit der Normalen der Ebene, welche die drei Punkte aufspannen und jeweils
+einem der Vektoren zwischen je zwei Punkten eine Weitere Ebene so gebildet,
+das die Normale dieser neuen Ebene in das Dreieck zeigt.
 
 Dann muss lediglich der oben berechnete Schnittpunkt $\vec{p}$ in die neue
 Ebenengleichung eingesetzt werden:
@@ -424,12 +424,12 @@ Ergaben alle drei Prüfungen ein erfolgreiches Ergebnis, so liegt der Punkt in
 dem Dreieck. Das bedeutet, das die Gerade das Dreieck schneidet.
 
 \subsection{Schnittpunkt in Kugel}
-Um die Anzahl der Schnittpunkttests zwischen Dreiecken und Geraden zu veringern
+Um die Anzahl der Schnittpunkttests zwischen Dreiecken und Geraden zu verringern
 werden Kugeln um die Dreiecke definiert. So muss nur überprüft werden ob eine
 Gerade eine Kugel schneidet oder nicht. Eine Kugel wird durch den Ortsvektor des
 Mittelpunktes und den Radius beschrieben. Setzt man die Geradengleichung in die
 Kugelgleichung ein, so erhält man eine Quadratische Gleichung für den
-Schnittpunkt. diese lässt sich wie jede andere quadratische Gleichung mit der
+Schnittpunkt. Diese lässt sich wie jede andere quadratische Gleichung mit der
 Methode:
 $$x_{1,2} = \frac{p}{2} \pm \sqrt{\frac{p^2}{4} - q}$$ 
 Lösen. In unserem Fall reicht es aber festzustellen, ob ein Schnittpunkt
