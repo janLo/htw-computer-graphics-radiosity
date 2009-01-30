@@ -406,8 +406,26 @@ welche zu dem Dreieck zeigt. Dies muss für alle drei Kanten durchgeführt werde
 wobei beim ersten Misserfolg abgebrochen werden kann.
 
 Ergaben alle drei Prüfungen ein erfolgreiches Ergebnis, so liegt der Punkt in
-dem Freieck. Das bedeutet, das die Gerade das Dreieck schneidet.
+dem Dreieck. Das bedeutet, das die Gerade das Dreieck schneidet.
 
+\subsection{Schnittpunkt in Kugel}
+Um die Anzahl der Schnittpunkttests zwischen Dreiecken und Geraden zu veringern
+werden Kugeln um die Dreiecke definiert. So muss nur überprüft werden ob eine
+Gerade eine Kugel schneidet oder nicht. Eine Kugel wird durch den Ortsvektor des
+Mittelpunktes und den Radius beschrieben. Setzt man die Geradengleichung in die
+Kugelgleichung ein, so erhält man eine Quadratische Gleichung für den
+Schnittpunkt. diese lässt sich wie jede andere quadratische Gleichung mit der
+Methode:
+$$x_{1,2} = \frac{p}{2} \pm \sqrt{\frac{p^2}{4} - q}$$ 
+Lösen. In unserem Fall reicht es aber festzustellen, ob ein Schnittpunkt
+existiert oder nicht. Dazu muss lediglich der Term unter der Wurzel ausgewertet
+werden. Ist dieser kleiner null, so existiert kein Schnittpunkt. Dieser Ausdruck
+sieht wie folgt aus:
+$$x = \frac{ {2 * \vec{d} \cdot (\vec{o} - \vec{c})}^2 }{4} - {(\vec{o} -
+\vec{c})}^2 - r^2$$
+Dabei ist $\vec{d}$ der Richtungsvektor und $\vec{o}$ der Ortsvektor der
+Geraden. Der Mittelpunkt der Kugel ist $\vec{c}$ und ihr Radius $r$. Die
+Variable $x$ ist das auszuwertende Ergebnis.
 
 \begin{appendix}
 \chapter{Anhang}
@@ -421,7 +439,7 @@ dem Freieck. Das bedeutet, das die Gerade das Dreieck schneidet.
   \begin{figure}[htb]
     \centering
     \includegraphics[width=12cm]{img/correct_ff.png}
-    \caption{Links: falsche Formfaktoren, Rechts: korrigierte
+    \caption{Links: korrigierte Formfaktoren, Rechts: falsche
     Formfaktoren.}
     \label{fig:ff_correct}
   \end{figure}
