@@ -221,8 +221,94 @@ orthogonalen Angrenzung zutrifft. Ist dies der Fall, so wird der aktuelle
 Formfaktor durch $1,5$ gereilt, ohne die Gesamtsumme zu ändern. Dadurch werden
 subjektiv realistischere Bilder generiert (siehe \ref{fig:ff_correct}). 
 
-Der Algorithmus zur Radiosity berechnung iteriert zuerst über alle Polygone und
-für jedes \texttt{Polygon} über alle \texttt{PolygonTriangle}s. 
+Der Algorithmus zur Radiosity-Berechnung ist in der Funktion
+\texttt{runLightPass()} der Klasse \texttt{Scene} implementiert. Er iteriert 
+zuerst über alle Polygone und für jedes \texttt{Polygon} über alle 
+\texttt{PolygonTriangle}s. Für jedes \texttt{PolygonTriangle} wird 
+anschließend eine Liste mit den potentiell sichtbaren \texttt{PolygonTriangle}s
+erstellt. Dies ist in der Funktion \texttt{findReachables()} implementiert und
+prüft lediglich für jedes andere \texttt{PolygonTriangle}, ob alle drei 
+Dreieckspunkte hinter der Ebene des Dreiecks liegen. Ist dies der Fall, so ist 
+das Dreieck nicht sichtbar und muss nicht beachtet werden.
+
+Anschließend wird über jedes \texttt{Patch} $i$ jedes \texttt{PatchTriangle}s
+iteriert. Für jedes \texttt{Patch} wirdi, wenn die abzugebende Energie des
+Patches $i$ größer $0$ ist, die Liste aller Potentiell sichtbaren
+Dreiecke durchlaufen und auch da wieder jedes \texttt{PatchTriangle} und alle
+Patches ($j$). 
+
+Für die Patches $i$ und $j$ wird jetzt der Verbindungsvektor \texttt{ray}
+gebildet und anschließend die prinzipielle Erreichbarkeit $V$ der Flächen 
+über die Lage der Mittelpunkte der Dreiecke zu der Ebene des anderen Dreieckes 
+berechnet. für das Dreieck $i$ und $j$ mit den Mittelpunkten $\vec{m}_{i,j}$ und
+den Normalen $\vec{n}_{i,j}$ sehen diese Ausdrücke wie folgt aus:
+\begin{eqnarray*}
+  V_{ij} &=& \vec{n}_i * \vec{m}_j * d_i\\
+  V_{ji} &=& \vec{n}_j * \vec{m}_i * d_j    
+\end{eqnarray*}
+Dies entspricht einem Einsetzen der Vektorkomponenten der Mittelpunkte in die
+Ebenengleichung der surch die drei Dreiekspunkte des anderen Dreieckes
+aufgespannten Ebene.
+
+Wurde eine Prinzipielle Sichtbarkeit festgestellt, so wird die Länge
+\texttt{raylen} des Verbindungsvektors und der normierte Verbindungsvektor
+berechnet. Anschließend wird die sichtbarkeit mit der Funktion
+\texttt{isReachable()} ermittelt.
+
+In dieser Funktion werden alle \texttt{PolygonTriangle}s, die die Patches $i$
+und $j$ nicht enthalten durchgegangen. Für jedes dieser Dreiecke wird getestet,
+ob die Verbindungsgerade es schneidet. Dabei werden die Kugeln um die Polygone
+genutzt, so kann erst überprüft werden, ob eine teure Schnittpunktberechnung
+überhaupt nötig ist. Anschließennd wird der Schnittpunkt mit der Dreiecksebene 
+berechnet und getestet ob er sich auf dem Verbindungsstück der Gerade liegt. Ist
+dies der Fall, so wird getestet, ob sich der Schnittpunkt wirklich in dem
+Dreieck befindet. Ist dies der Fall so wird false (nicht erreichbar)
+zurückgegeben. Wird kein Schnittpunkt gefunden der in irgendeinem dreieck auf
+der Verbindungslinie liegt, so wird true (erreichbar) zurück gegeben.
+
+Im Falle der Sichtbarkeit werden die Schnittwinkel $\phi_i$ und $\phi_j$ 
+zwischen den normierten Normalen $\vec{n}_i$, $\vec{n}_j$ und dem normiertem
+Verbindungsvektor $\vec{v}$ berechnet:
+\begin{eqnarray*}
+  \cos\phi_i &=& \vec{v} \cdot \vec{n}_i\\
+  \cos\phi_j &=& -\vec{v} \cdot \vec{n}_j
+\end{eqnarray*}
+und die oben genannte Näherungsformel für den Formfaktor ausgerechnet.
+Der Formfaktor wird, wenn er größer $0$ ist, zu dem entsprechenden Patch in 
+einer Liste gespeichert und zu der Summe der Gesamtformfaktoren addiert.
+
+Zusätzlich wird geprüft, ob für die zwei Patches die oben genannte 
+Korrekturmaßnahmne für orthoginal aneinander grenzende Patches gilt. Dazu wird 
+zuerst der Winkel zwischen den beiden Normalen der Dreiecksebenen berechnet. 
+Wird ein rechter Winkel festgestellt, so wird überprüft, ob die Dreiecke zwei 
+Punkte gemeinsam haben. Ist dies der Fall, wird die Maßnahme angewendet.
+
+Anschließend werden alle Formfaktoren so normiert angewendet, das die
+Gesammtsumme eins beträgt. Dazu werden die Formfaktoren $F_{ji}$ surch die
+Gesamtsumme $S$ geteilt und mit dem Radiosity-Wert $\vartriangle B_i$ aus der
+letzten Iteration des Patches $i$ multipliziert. Dieser Wert wird aus die 
+Summe $\vartriangle B_j$ des Patches $j$ für diese Iteration aufaddiert:
+$$\vartriangle{B_j} = \vartriangle{B_j} + \frac{F_{ji}}{S} * \vartriangle B_i$$
+
+Nach einem solchem Durchlauf wird die Funktion \texttt{updateLight()}
+aufgerufen, welche wieder über alle Patches iteriert und die Summen der letzten
+Iteration auf die Gesamtsummen anwendet.
+
+Hier kann man erkennen, das während der Beleuchtungsberechnung mehrere
+Radiosity-Summen verwendet werden:
+\begin{itemize}
+  \item Die Summe der Gesamtstrahlung. Sie wird mit der Eigenstrahlung des
+    Polygons initialisiert und nach jeder Iteration um die Summe der
+    hinzugekommen Strahlung erhöht.
+  \item Die Summe der Strahlung aus der letzten Iteration. Sie wird ebenfalls
+    mit der Eigenstrahlung initialisiert und bekommt nach jeder Iteration den
+    Wert der Summen aus der letzten Iteration zugewiesen.
+  \item Die Summe der Strahlung aus der Aktuellen Iteration. Auf diese wird
+    während der Iteration die hinzukommende Strahlung aufaddiert. Sie wird zu
+    Beginn und nach jeder Iteration mit $0$ initialisiert.
+\end{itemize}
+Diese Verfahrensweise mit den drei Summen, welche nach den Iterationen
+aktualisiert werden wurde als am besten für subjektiv gute Bilder befunden.
 % Algo
 
 \section{Projektion}\label{sec:proj}
