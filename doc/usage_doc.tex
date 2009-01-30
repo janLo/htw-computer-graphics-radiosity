@@ -19,9 +19,9 @@
 \setlength{\abovecaptionskip}{-0.1cm}
 \addto\captionsngerman{\renewcommand\figurename{Abb.}}
 
-\title{Beleg\\
-Computergraphik I\\
-Komplexaufgabe: Beleuchtungsverfahren}
+\subject{Beleg Computergraphik I}
+\title{Komplexaufgabe\\
+Beleuchtungsverfahren}
 \author{Jan Losinski}
 
 \begin{document}
@@ -102,6 +102,9 @@ Algorithmen durch effizientere. So ist es problemlos möglich, alle
 Vektoroperationen auf die Vektorerweiterungen (z.B. SSE) moderner Prozessoren 
 abzubilden und das Programm dadurch zu beschleunigen.
 
+Ein durch dieses Programm fertig beleuchtetes und gerendertes Bild ist im Anhang
+als Bild \ref{fig:all} abgebildet.
+
 \section{Szene}
 Die Szene wird in der Funktion \texttt{defScene()} der Klasse \texttt{Scene}
 definiert. Diese Funktion ist als Virtual deklariert. Dies hat den Vorteil, das
@@ -128,10 +131,13 @@ werden, werden automatisch in Unterdreiecke einer vorgegebenen Maximalen
 Kantenlänge und diese wiederum in Patches einer maximalen vorgegebenen
 Kantenlänge geteilt. Dies geschieht, in dem die längste Kante gesucht wird und,
 falls sie länger als der Schwellwert ist, der Punkt in der Mitte dieser Strecke
-berechnet wird ($\frac{(p_1 - p_2)}{2}$) und die Funktion zum Teilen mit jeweils zwei 
-der Punkte des urprünglichen Dreieckes und dem neuen Punkt aufgerufen wird. 
+($\vec{p}_m$) berechnet wird:
+$$\vec{p}_m = \vec{p}_2 + \frac{(\vec{p}_1 - \vec{p}_2)}{2}$$
+und die Funktion zum Teilen mit jeweils zwei der Punkte des urprünglichen 
+Dreieckes und dem neuen Punkt aufgerufen wird. 
 Ist der Schwellwert erreicht, so wird das Dreieck in eine Liste hinzugefügt. 
-Die Schwellwerte sind in der Datei \texttt{Triangle.cpp} anpassbar.
+Die Schwellwerte sind in der Datei \texttt{Triangle.cpp} anpassbar (siehe
+\ref{fig:patches}).
 
 Dadurch wird eine Hirarchie von Dreiecken erstellt (\texttt{Polygon} 
 $\rightarrow$ \texttt{PolygonTriangle} $\rightarrow$ \texttt{PatchTriangle} 
@@ -167,10 +173,11 @@ hineinsehen möchte.
 Für die Projektion wird eine Sichtebene definiert. Diese wird durch die Klasse
 \texttt{ViewPlane} repräsentiert. Eine Sichtebene (mit der Normale $n$) wird die 
 drei Punkte ($\vec{a}$, $\vec{b}$ und $\vec{c}$) definiert. Diese drei Punkte 
-spannen die Ebene auf und bilden zwei Vektoren, die die Höhe ($h = |\vec{b} - \vec{a}|$) 
-und Breite ($b = |\vec{c} - \vec{a}|$) der Ebene definieren. Zusätzlich wird 
-der Abstand ($d$) des Projektions-Referenzpunktes ($\vec{p}$) angegeben. Dieser 
-Punkt wird als mittig hinter der Ebene liegend berechnet:
+spannen die Ebene auf und bilden zwei Vektoren, die die Höhe ($h = |\vec{b} - 
+\vec{a}|$) und Breite ($b = |\vec{c} - \vec{a}|$) der Ebene definieren (siehe
+\ref{fig:view}). Zusätzlich wird der Abstand ($d$) des 
+Projektions-Referenzpunktes ($\vec{p}$) angegeben. Dieser Punkt wird als mittig 
+hinter der Ebene liegend berechnet:
 $$\vec{p} = \vec{a} + \frac{\vec{c} - \vec{a}}{2} + \frac{\vec{b} - \vec{a}}{2}
 - d * \frac{\vec{n}}{|\vec{n}|}$$
 
@@ -192,6 +199,7 @@ alle Pixeldaten in einem Puffer hält und mit einem mal per
 \texttt{glDrawPixel()} azeigt.
 
 \section{Beleuchtung (Radiosity)}
+\subsection{Generell}
 Zur Beleuchtung der Stene wurde das Radiosity-Verfahren implementiert. Dieses
 berechnet. Dabei wird für je zwei Patches die Menge der von dem einen aus das
 andere Patch abgestrahlte Energie berechnet. Die abgestrahlte Energie des
@@ -226,6 +234,7 @@ orthogonalen Angrenzung zutrifft. Ist dies der Fall, so wird der aktuelle
 Formfaktor durch $1,5$ gereilt, ohne die Gesamtsumme zu ändern. Dadurch werden
 subjektiv realistischere Bilder generiert (siehe \ref{fig:ff_correct}). 
 
+\subsection{Algorithmus}
 Der Algorithmus zur Radiosity-Berechnung ist in der Funktion
 \texttt{runLightPass()} der Klasse \texttt{Scene} implementiert. Er iteriert 
 zuerst über alle Polygone und für jedes \texttt{Polygon} über alle 
@@ -318,7 +327,7 @@ aktualisiert werden wurde als am besten für subjektiv gute Bilder befunden.
 Mit Iteration ist ein Durchlauf des kompletten oben beschriebenem Algorithmus
 gemeint. Die Anzahl der Durchläufe ist fest in der Funktion \texttt{lighten()} 
 festgelegt. Durch hinzufügen von Aufrufen von \texttt{runLightPass()} kann diese
-verändert werden.
+verändert werden (siehe \ref{fig:iter}).
 
 Als Reflektionskonstanten werden die Farbwerte der Dreiecke genutzt. Das
 bedeutet, das für jeden Farbkanal unterschiedlich viel Licht reflektiert wird.
@@ -331,6 +340,10 @@ Um dies zu vereinfachen ist der Radiositywert, wie die Farben von der Klasse
 \texttt{Color}, welche lediglich ein \texttt{Vertex} mit anderem Namen ist, also
 ein Vektor. So können Farben die überladenen Operatoren der \texttt{Vertex}
 Klasse nutzen.
+
+Die Gesamtbeleuchtung der Szene kann durch den Emit-Wert der Lichtemittierenden
+Flächen eingestellt werden (siehe \ref{fig:light}). Dieser Wert wirkt sich auf
+die komplette Szene aus.
 
 \section{Projektion}\label{sec:proj}
 
@@ -432,6 +445,18 @@ Variable $x$ ist das auszuwertende Ergebnis.
 \section{Bilder}
   \begin{figure}[htb]
     \centering
+    \includegraphics[width=12cm]{img/patches.png}
+    \caption{Unterteilung in Patches mit verschiedenen maximalen Kantenlängen.}
+    \label{fig:patches}
+  \end{figure}
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=12cm]{img/view.png}
+    \caption{Unterschiedliche Lage der Sichtebene.}
+    \label{fig:view}
+  \end{figure}
+  \begin{figure}[htb]
+    \centering
     \includegraphics[width=12cm]{img/wrong_ff.png}
     \caption{Falsche Formfaktoren in den Ecken.}
     \label{fig:ff_corner}
@@ -442,6 +467,24 @@ Variable $x$ ist das auszuwertende Ergebnis.
     \caption{Links: korrigierte Formfaktoren, Rechts: falsche
     Formfaktoren.}
     \label{fig:ff_correct}
+  \end{figure}
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=12cm]{img/iter.png}
+    \caption{Scene nach ein, zwei und drei Beleuchtungsiterationen}
+    \label{fig:iter}
+  \end{figure}
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=12cm]{img/light.png}
+    \caption{Scene mit unterschiedlicher Beleuchtung}
+    \label{fig:light}
+  \end{figure}
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=12cm]{img/all.png}
+    \caption{Fertig beleuchtetes und gerendertes Bild}
+    \label{fig:all}
   \end{figure}
 \end{appendix}
 \end{document}
