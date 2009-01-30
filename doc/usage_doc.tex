@@ -111,11 +111,11 @@ von \texttt{Scene} erbt und die oben genannte Funktion überschreibt.
 Die Definition der Szene erfolgt in Polygonen. Polygone können beliebig viele
 Ecken haben. Zu beachten ist aber, das Polygone als TriangleStrips implementiert
 sind. Das bedeutet, das die ersten drei Punkte zu einem und jeder weitere Punkt 
-mit den beiden letzten Punkten zu einem weiterem Dreieck verbundn werden.
+mit den beiden letzten Punkten zu einem weiterem Dreieck verbunden werden.
 
 Polygone werden durch die Klasse \texttt{Polygon} repräsentiert. Ein Polygon
 bekommt bei seiner Initialisierung einen Farbwert sowie einen Licht-Abgabe-Wert.
-Die Punkte des Poligons werden als \texttt{Vertex} mit der Funktion
+Die Punkte des Polygons werden als \texttt{Vertex} mit der Funktion
 \texttt{addVertex()} zu den momentanem Polygon hinzugefügt. Zuletzt muss das
 Polygon mittels \texttt{push\_back()} zu der Liste der Polygone hinzugefügt
 werden.
@@ -157,6 +157,11 @@ benötigt, um den Aufwand bei der Schnittpunktberechnung zu senken, da sich
 Schnittpunkte mit Kugeln einfacher berechnen lassen als Schnittpunkte mit
 Dreiecken. Eine \texttt{BSphere} besteht nur aus dem Ortsvektor des
 Mittelpunktes der Kugel und dem Radius.
+
+Zusätzlich kann die Anzeige eines Polygons beim Renderprozess mittels der
+Funktion \texttt{disable()} unterbunden werden. Dies ist nützlich, wenn man die
+Beleuchtung eines Raumes mit vier Wänden berechnen will, jedoch zu einer Seite
+hineinsehen möchte.
 
 \section{Projektionseinstellungen}
 Für die Projektion wird eine Sichtebene definiert. Diese wird durch die Klasse
@@ -243,8 +248,8 @@ gebildet und anschließend die prinzipielle Erreichbarkeit $V$ der Flächen
 berechnet. für das Dreieck $i$ und $j$ mit den Mittelpunkten $\vec{m}_{i,j}$ und
 den Normalen $\vec{n}_{i,j}$ sehen diese Ausdrücke wie folgt aus:
 \begin{eqnarray*}
-  V_{ij} &=& \vec{n}_i * \vec{m}_j * d_i\\
-  V_{ji} &=& \vec{n}_j * \vec{m}_i * d_j    
+  V_{ij} &=& (\vec{n}_i * \vec{m}_j * d_i) < 0\\
+  V_{ji} &=& (\vec{n}_j * \vec{m}_i * d_j) < 0   
 \end{eqnarray*}
 Dies entspricht einem Einsetzen der Vektorkomponenten der Mittelpunkte in die
 Ebenengleichung der surch die drei Dreiekspunkte des anderen Dreieckes
@@ -309,10 +314,100 @@ Radiosity-Summen verwendet werden:
 \end{itemize}
 Diese Verfahrensweise mit den drei Summen, welche nach den Iterationen
 aktualisiert werden wurde als am besten für subjektiv gute Bilder befunden.
-% Algo
+
+Mit Iteration ist ein Durchlauf des kompletten oben beschriebenem Algorithmus
+gemeint. Die Anzahl der Durchläufe ist fest in der Funktion \texttt{lighten()} 
+festgelegt. Durch hinzufügen von Aufrufen von \texttt{runLightPass()} kann diese
+verändert werden.
+
+Als Reflektionskonstanten werden die Farbwerte der Dreiecke genutzt. Das
+bedeutet, das für jeden Farbkanal unterschiedlich viel Licht reflektiert wird.
+Dadurch sind die Radiositywerte der einzelnen Flächen keine skalaren Werte
+sondern Farbvektoren, was wieder zur Folge hat, das unterschiedliche Werte für
+jeden Farbkanal abgestrahlt und wieder aufgenommen werden, was farbige
+Lichtreflektionen verursacht.
+
+Um dies zu vereinfachen ist der Radiositywert, wie die Farben von der Klasse
+\texttt{Color}, welche lediglich ein \texttt{Vertex} mit anderem Namen ist, also
+ein Vektor. So können Farben die überladenen Operatoren der \texttt{Vertex}
+Klasse nutzen.
 
 \section{Projektion}\label{sec:proj}
-% Algo
+
+Die Projektion der Szene erfolgt nach dem Beleuchten. Als Verfahren zur
+Projektion kommt Raycasting zum einsatz. Das bedeutet, die Szene wird vom
+Projektions-Referenzpunkt durch die Sichtebene für jedes Pixel abgerastert. Dazu
+werden die oben genannten Geraden durch jedes Pixel der Sichtebene verwendet.
+
+Diese Geraden wurden beim Initialisieren der Sichtebene alle in eine Liste
+einfefügt. Diese Liste wird jetzt durchlaufen. Für jede Gerade werden alle
+Polygone durchlaufen. Für alle eingeschalteten Polygone wird geprüft, ob die
+momentane Gerade die umgebende Kugel schneidet.  Ist dies der Fall, so wird die
+Liste aller \texttt{PolygonTriangle}s dieses Polygons durchgegangen und für
+jedes der Schnittpunkt mit der durch das Dreieck aufgespannten Ebene gesucht.
+Dieser wird, wenn seine Normale in Richtung der Sichtebene zeigt, in eine Liste
+angefügt. 
+
+Diese Liste der Schnittpunkte wird nach der Iteration durch die Polygone nach
+Abstand zur Sichtebene sortiert.
+
+Danach wird diese Liste durchgegangen und für jeden Schnittpunkt getestet, ob
+er in dem entsprechendem Dreieck liegt. Ist dies der Fall, so wird die Liste
+nicht weiter durchsucht, da durch die Sortierung dieses ja das Dreieck ist, was
+der Sichtebene an dem betrachtetem Punkt am nächsten ist.
+
+Jetzt wird das Patch gesucht, welches der Strahl an diesem Punkt schneidet. Um
+den Aufwand zu minimieren wird daher zuerst nach dem \texttt{PatchTriangle}
+gesucht. Auch hier wird wieder Rechenzeit gespaart, indem vorerst nur die Kufeln
+um die Dreiecke betrachtet werden. Dazu wird jeweils der Abstand zwischen dem
+Mittelpunkt der Kugel und dem Schnittpunkt mit der Ebene berechnet. Ist dieser
+größer als der Radius der Kugel, so wird das Dreieck nicht weiter betrachtet. 
+Andernfalls wird getestet ob der Schnittpunkt auch wirklich in dem momentanem
+Dreieck liegt.
+
+Ist dies der Fall, so werden die Patches dieses \texttt{PatchTriangle}s
+durchlaufen und genauso wie bei dem \texttt{PatchTriangle} zuerst getestet, ob
+der Schnittpunkt in der Kugel liegt und anschließend, im Erfolgsfall, getestet
+ob der Schnittpunkt tatsächlich in dem Dreieck liegt. Ist dies der Fall, so wird
+das Pixel an der aktuellen Position mit der Farbe des aktuellen Patches gefüllt.
+
+Dadurch wird das Komplette Bild gerendert. Durch die Sortierung wird immer nur
+das Objekt, was an der aktuellen Position der Sichtebene am nächsten ist
+gezeichnet. Furch das Bilden der Rastervektoren zwischen dem Referenzpunkt und
+der Position auf der Sichtebene entsteht automatisch eine perspektivische
+Projektion.
+
+\section{Sonstiges}
+\subsection{Schnittpunkt im Dreieck}
+Um zu testen ob eine Gerade ein Dreieck schneidet wird zuerst der Schnittpunkt
+$\vec{p}$ der Ebene $E$ mit der Normalen $\vec{n}$ und der Ebenengleichung $E =
+ax + by + cz + d$, welche die drei Punkte des Dreiecks aufspannen und der Gerade 
+$G$ mit der Geradengleichung $\vec{o} + t*\vec{r}$, wobei $\vec{o}$ der 
+Ortsvektor und $\vec{r}$ der Richtungsvector der Geraden berechnet:
+\begin{eqnarray*}
+    s       &=& -\frac{\vec{n} \cdot \vec{o} + d}{\vec{n} \cdot \vec{d}}\\
+    \vec{p} &=& \vec{o} + s * \vec{d}
+\end{eqnarray*}
+Wobei der Nenner der ersten Gleichung $\vec{n} \cdot \vec{d}$ dabei zuerst
+ausgewertet wird. Ist dieser kleiner null kann die Berechnung sofort abgebrochen
+werden, da kein Schnittpunkt vorliegt. In diesem Fall liegt die Gerade In der
+Ebene oder Parallel dazu.
+
+In jedem anderem Fall wird geprüft, ob der Schnittpunkt in dem Dreieck liegt.
+Dazu wird mit der Normalen der Ebene die die drei Punkte aufspannen und jeweils
+einem der Vektoren zwischen jeweils zwei Punkten eine Weitere Ebene so gebildet,
+das die Normale dieser Ebene in das Dreieck zeigt.
+
+Dann muss lediglich der oben berechnete Schnittpunkt $\vec{p}$ in die neue
+Ebenengleichung eingesetzt werden:
+$$h = p_x a + p_y b + p_z c + d$$
+Ist dieser Ausdruck kleiner null, so liegt der Punkt auf der Seite der Ebene,
+welche zu dem Dreieck zeigt. Dies muss für alle drei Kanten durchgeführt werden,
+wobei beim ersten Misserfolg abgebrochen werden kann.
+
+Ergaben alle drei Prüfungen ein erfolgreiches Ergebnis, so liegt der Punkt in
+dem Freieck. Das bedeutet, das die Gerade das Dreieck schneidet.
+
 
 \begin{appendix}
 \chapter{Anhang}
